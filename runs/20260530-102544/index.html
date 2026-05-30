@@ -1,0 +1,590 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>create a calculator — FARENA</title><link rel=stylesheet href="../../assets/style.css"></head><body><div class=wrap><header><a class=back href="../../">← all benchmarks</a><h1>create a calculator</h1><div class=sub>2026-05-30</div></header><details class=prompt-d open><summary>prompt</summary><div class=prompt>create a calculator</div></details><div class=charts><div class=chart><h4>time · lower is better</h4><div class=bar><span class=bl style="color:#D97757">★ CLAUDE</span><div class=bt><div class=bf style="width:74%;background:#D97757"></div></div><span class=bv>39.7s</span></div><div class=bar><span class=bl style="color:#10A37F">CODEX</span><div class=bt><div class=bf style="width:100%;background:#10A37F"></div></div><span class=bv>53.1s</span></div></div><div class=chart><h4>lines of code</h4><div class=bar><span class=bl style="color:#D97757">CLAUDE</span><div class=bt><div class=bf style="width:90%;background:#D97757"></div></div><span class=bv>249</span></div><div class=bar><span class=bl style="color:#10A37F">★ CODEX</span><div class=bt><div class=bf style="width:100%;background:#10A37F"></div></div><span class=bv>275</span></div></div><div class=chart><h4>lines / second</h4><div class=bar><span class=bl style="color:#D97757">★ CLAUDE</span><div class=bt><div class=bf style="width:100%;background:#D97757"></div></div><span class=bv>6.3</span></div><div class=bar><span class=bl style="color:#10A37F">CODEX</span><div class=bt><div class=bf style="width:82%;background:#10A37F"></div></div><span class=bv>5.2</span></div></div></div><table><tr><th>metric</th><th style="color:#D97757">CLAUDE</th><th style="color:#10A37F">CODEX</th></tr><tr><td class=metric>time</td><td><span class=win>★ 39.7s</span></td><td>53.1s</td></tr><tr><td class=metric>model</td><td>claude-opus-4-8</td><td>gpt-5.5</td></tr><tr><td class=metric>lines of code</td><td>249</td><td>275</td></tr><tr><td class=metric>file size</td><td>6.7KB</td><td>6.1KB</td></tr><tr><td class=metric>lines / sec</td><td>6.3</td><td>5.2</td></tr></table><div class=tabs><button class="tab on" data-view=preview onclick="show('preview')">▶ Preview</button><button class=tab data-view=source onclick="show('source')">{ } Source</button><button class=tab data-view=compare onclick="show('compare')">⇄ Compare</button></div><div class=view id=view-preview><div class=pv><div class=pvh><span class=nm style="color:#D97757">CLAUDE</span><div class=sz><button onclick="sz('claude','100%',this)">🖥</button><button onclick="sz('claude','820px',this)">💻</button><button onclick="sz('claude','390px',this)">📱</button><a class=cp href="claude/calculator.html" target=_blank>open ↗</a></div></div><div class=pvb><iframe id="pf-claude" src="claude/calculator.html"></iframe></div></div><div class=pv><div class=pvh><span class=nm style="color:#10A37F">CODEX</span><div class=sz><button onclick="sz('codex','100%',this)">🖥</button><button onclick="sz('codex','820px',this)">💻</button><button onclick="sz('codex','390px',this)">📱</button><a class=cp href="codex/index.html" target=_blank>open ↗</a></div></div><div class=pvb><iframe id="pf-codex" src="codex/index.html"></iframe></div></div></div><div class=view id=view-source hidden><div class=pv><div class=pvh><span class=nm style="color:#D97757">CLAUDE</span> <span class=metric>calculator.html</span><button class=cp onclick="cp('claude',this)">copy</button></div><pre class=src id="src-claude">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;Calculator&lt;/title&gt;
+&lt;style&gt;
+  :root {
+    --bg: #1e1e2e;
+    --panel: #2a2a3c;
+    --display: #11111b;
+    --key: #313244;
+    --key-hover: #45475a;
+    --op: #f9a825;
+    --op-hover: #ffb300;
+    --accent: #585b70;
+    --text: #cdd6f4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;
+  }
+  .calculator {
+    width: 320px;
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .display {
+    background: var(--display);
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 16px;
+    text-align: right;
+    overflow: hidden;
+  }
+  .history {
+    color: var(--accent);
+    font-size: 0.95rem;
+    min-height: 20px;
+    word-break: break-all;
+  }
+  .current {
+    color: var(--text);
+    font-size: 2.4rem;
+    font-weight: 500;
+    word-break: break-all;
+  }
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 18px 0;
+    font-size: 1.25rem;
+    color: var(--text);
+    background: var(--key);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.05s;
+  }
+  button:hover { background: var(--key-hover); }
+  button:active { transform: scale(0.95); }
+  button.op { background: var(--op); color: #1e1e2e; font-weight: 600; }
+  button.op:hover { background: var(--op-hover); }
+  button.func { background: var(--accent); }
+  button.span-2 { grid-column: span 2; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;calculator&quot;&gt;
+    &lt;div class=&quot;display&quot;&gt;
+      &lt;div class=&quot;history&quot; id=&quot;history&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;current&quot; id=&quot;current&quot;&gt;0&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;keys&quot;&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;clear&quot;&gt;AC&lt;/button&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;sign&quot;&gt;±&lt;/button&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;percent&quot;&gt;%&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;/&quot;&gt;÷&lt;/button&gt;
+
+      &lt;button data-num=&quot;7&quot;&gt;7&lt;/button&gt;
+      &lt;button data-num=&quot;8&quot;&gt;8&lt;/button&gt;
+      &lt;button data-num=&quot;9&quot;&gt;9&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;*&quot;&gt;×&lt;/button&gt;
+
+      &lt;button data-num=&quot;4&quot;&gt;4&lt;/button&gt;
+      &lt;button data-num=&quot;5&quot;&gt;5&lt;/button&gt;
+      &lt;button data-num=&quot;6&quot;&gt;6&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;-&quot;&gt;−&lt;/button&gt;
+
+      &lt;button data-num=&quot;1&quot;&gt;1&lt;/button&gt;
+      &lt;button data-num=&quot;2&quot;&gt;2&lt;/button&gt;
+      &lt;button data-num=&quot;3&quot;&gt;3&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;+&quot;&gt;+&lt;/button&gt;
+
+      &lt;button class=&quot;span-2&quot; data-num=&quot;0&quot;&gt;0&lt;/button&gt;
+      &lt;button data-action=&quot;decimal&quot;&gt;.&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-action=&quot;equals&quot;&gt;=&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;script&gt;
+(function () {
+  const currentEl = document.getElementById(&#x27;current&#x27;);
+  const historyEl = document.getElementById(&#x27;history&#x27;);
+
+  let current = &#x27;0&#x27;;      // string being typed
+  let previous = null;    // stored operand (number)
+  let operator = null;    // pending operator
+  let justEvaluated = false;
+
+  const ops = {
+    &#x27;+&#x27;: (a, b) =&gt; a + b,
+    &#x27;-&#x27;: (a, b) =&gt; a - b,
+    &#x27;*&#x27;: (a, b) =&gt; a * b,
+    &#x27;/&#x27;: (a, b) =&gt; b === 0 ? NaN : a / b,
+  };
+  const symbols = { &#x27;+&#x27;: &#x27;+&#x27;, &#x27;-&#x27;: &#x27;−&#x27;, &#x27;*&#x27;: &#x27;×&#x27;, &#x27;/&#x27;: &#x27;÷&#x27; };
+
+  function format(n) {
+    if (!isFinite(n)) return &#x27;Error&#x27;;
+    // Trim float noise, keep reasonable precision.
+    const rounded = Math.round((n + Number.EPSILON) * 1e10) / 1e10;
+    return String(rounded);
+  }
+
+  function render() {
+    currentEl.textContent = current;
+    historyEl.textContent =
+      previous !== null &amp;&amp; operator
+        ? `${format(previous)} ${symbols[operator]}`
+        : &#x27;&#x27;;
+  }
+
+  function inputDigit(d) {
+    if (justEvaluated) { current = &#x27;0&#x27;; justEvaluated = false; }
+    current = current === &#x27;0&#x27; ? d : current + d;
+  }
+
+  function inputDecimal() {
+    if (justEvaluated) { current = &#x27;0&#x27;; justEvaluated = false; }
+    if (!current.includes(&#x27;.&#x27;)) current += &#x27;.&#x27;;
+  }
+
+  function chooseOperator(nextOp) {
+    const value = parseFloat(current);
+    if (previous === null) {
+      previous = value;
+    } else if (operator &amp;&amp; !justEvaluated) {
+      previous = ops[operator](previous, value);
+    }
+    operator = nextOp;
+    current = format(previous);
+    justEvaluated = false;
+    // After choosing an operator, next digit starts fresh.
+    pendingFresh = true;
+  }
+
+  let pendingFresh = false;
+
+  function inputDigitGuarded(d) {
+    if (pendingFresh) { current = &#x27;0&#x27;; pendingFresh = false; }
+    inputDigit(d);
+  }
+  function inputDecimalGuarded() {
+    if (pendingFresh) { current = &#x27;0&#x27;; pendingFresh = false; }
+    inputDecimal();
+  }
+
+  function equals() {
+    if (operator === null || previous === null) return;
+    const value = parseFloat(current);
+    const result = ops[operator](previous, value);
+    historyEl.textContent = `${format(previous)} ${symbols[operator]} ${format(value)} =`;
+    current = format(result);
+    previous = null;
+    operator = null;
+    justEvaluated = true;
+    pendingFresh = false;
+    currentEl.textContent = current;
+  }
+
+  function clearAll() {
+    current = &#x27;0&#x27;;
+    previous = null;
+    operator = null;
+    justEvaluated = false;
+    pendingFresh = false;
+  }
+
+  function toggleSign() {
+    if (current === &#x27;0&#x27;) return;
+    current = current.startsWith(&#x27;-&#x27;) ? current.slice(1) : &#x27;-&#x27; + current;
+  }
+
+  function percent() {
+    current = format(parseFloat(current) / 100);
+    justEvaluated = true;
+  }
+
+  document.querySelector(&#x27;.keys&#x27;).addEventListener(&#x27;click&#x27;, (e) =&gt; {
+    const btn = e.target.closest(&#x27;button&#x27;);
+    if (!btn) return;
+
+    if (btn.dataset.num !== undefined) {
+      inputDigitGuarded(btn.dataset.num);
+    } else if (btn.dataset.op !== undefined) {
+      chooseOperator(btn.dataset.op);
+    } else {
+      switch (btn.dataset.action) {
+        case &#x27;decimal&#x27;: inputDecimalGuarded(); break;
+        case &#x27;equals&#x27;: equals(); return;
+        case &#x27;clear&#x27;: clearAll(); break;
+        case &#x27;sign&#x27;: toggleSign(); break;
+        case &#x27;percent&#x27;: percent(); break;
+      }
+    }
+    render();
+  });
+
+  // Keyboard support
+  window.addEventListener(&#x27;keydown&#x27;, (e) =&gt; {
+    if (e.key &gt;= &#x27;0&#x27; &amp;&amp; e.key &lt;= &#x27;9&#x27;) inputDigitGuarded(e.key);
+    else if (e.key === &#x27;.&#x27;) inputDecimalGuarded();
+    else if ([&#x27;+&#x27;, &#x27;-&#x27;, &#x27;*&#x27;, &#x27;/&#x27;].includes(e.key)) chooseOperator(e.key);
+    else if (e.key === &#x27;Enter&#x27; || e.key === &#x27;=&#x27;) { e.preventDefault(); equals(); return; }
+    else if (e.key === &#x27;Escape&#x27;) clearAll();
+    else if (e.key === &#x27;%&#x27;) percent();
+    else if (e.key === &#x27;Backspace&#x27;) {
+      current = current.length &gt; 1 ? current.slice(0, -1) : &#x27;0&#x27;;
+    } else return;
+    render();
+  });
+
+  render();
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div><div class=pv><div class=pvh><span class=nm style="color:#10A37F">CODEX</span> <span class=metric>index.html</span><button class=cp onclick="cp('codex',this)">copy</button></div><pre class=src id="src-codex">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Calculator&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main class=&quot;calculator&quot; aria-label=&quot;Calculator&quot;&gt;
+      &lt;output class=&quot;display&quot; id=&quot;display&quot; aria-live=&quot;polite&quot;&gt;0&lt;/output&gt;
+
+      &lt;section class=&quot;keys&quot; aria-label=&quot;Calculator keys&quot;&gt;
+        &lt;button class=&quot;key key-muted&quot; data-action=&quot;clear&quot;&gt;AC&lt;/button&gt;
+        &lt;button class=&quot;key key-muted&quot; data-action=&quot;delete&quot;&gt;DEL&lt;/button&gt;
+        &lt;button class=&quot;key key-muted&quot; data-value=&quot;%&quot;&gt;%&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;/&quot;&gt;÷&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;7&quot;&gt;7&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;8&quot;&gt;8&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;9&quot;&gt;9&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;*&quot;&gt;×&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;4&quot;&gt;4&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;5&quot;&gt;5&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;6&quot;&gt;6&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;-&quot;&gt;−&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;1&quot;&gt;1&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;2&quot;&gt;2&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;3&quot;&gt;3&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;+&quot;&gt;+&lt;/button&gt;
+
+        &lt;button class=&quot;key key-wide&quot; data-value=&quot;0&quot;&gt;0&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;.&quot;&gt;.&lt;/button&gt;
+        &lt;button class=&quot;key key-equals&quot; data-action=&quot;calculate&quot;&gt;=&lt;/button&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+
+    &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div></div><div class=view id=view-compare hidden><div class=cols><div class=col><div class=colh style="color:#D97757">CLAUDE</div><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;Calculator&lt;/title&gt;
+&lt;style&gt;
+  :root {
+    --bg: #1e1e2e;
+    --panel: #2a2a3c;
+    --display: #11111b;
+    --key: #313244;
+    --key-hover: #45475a;
+    --op: #f9a825;
+    --op-hover: #ffb300;
+    --accent: #585b70;
+    --text: #cdd6f4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;
+  }
+  .calculator {
+    width: 320px;
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .display {
+    background: var(--display);
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 16px;
+    text-align: right;
+    overflow: hidden;
+  }
+  .history {
+    color: var(--accent);
+    font-size: 0.95rem;
+    min-height: 20px;
+    word-break: break-all;
+  }
+  .current {
+    color: var(--text);
+    font-size: 2.4rem;
+    font-weight: 500;
+    word-break: break-all;
+  }
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 18px 0;
+    font-size: 1.25rem;
+    color: var(--text);
+    background: var(--key);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.05s;
+  }
+  button:hover { background: var(--key-hover); }
+  button:active { transform: scale(0.95); }
+  button.op { background: var(--op); color: #1e1e2e; font-weight: 600; }
+  button.op:hover { background: var(--op-hover); }
+  button.func { background: var(--accent); }
+  button.span-2 { grid-column: span 2; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;calculator&quot;&gt;
+    &lt;div class=&quot;display&quot;&gt;
+      &lt;div class=&quot;history&quot; id=&quot;history&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;current&quot; id=&quot;current&quot;&gt;0&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;keys&quot;&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;clear&quot;&gt;AC&lt;/button&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;sign&quot;&gt;±&lt;/button&gt;
+      &lt;button class=&quot;func&quot; data-action=&quot;percent&quot;&gt;%&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;/&quot;&gt;÷&lt;/button&gt;
+
+      &lt;button data-num=&quot;7&quot;&gt;7&lt;/button&gt;
+      &lt;button data-num=&quot;8&quot;&gt;8&lt;/button&gt;
+      &lt;button data-num=&quot;9&quot;&gt;9&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;*&quot;&gt;×&lt;/button&gt;
+
+      &lt;button data-num=&quot;4&quot;&gt;4&lt;/button&gt;
+      &lt;button data-num=&quot;5&quot;&gt;5&lt;/button&gt;
+      &lt;button data-num=&quot;6&quot;&gt;6&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;-&quot;&gt;−&lt;/button&gt;
+
+      &lt;button data-num=&quot;1&quot;&gt;1&lt;/button&gt;
+      &lt;button data-num=&quot;2&quot;&gt;2&lt;/button&gt;
+      &lt;button data-num=&quot;3&quot;&gt;3&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-op=&quot;+&quot;&gt;+&lt;/button&gt;
+
+      &lt;button class=&quot;span-2&quot; data-num=&quot;0&quot;&gt;0&lt;/button&gt;
+      &lt;button data-action=&quot;decimal&quot;&gt;.&lt;/button&gt;
+      &lt;button class=&quot;op&quot; data-action=&quot;equals&quot;&gt;=&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;script&gt;
+(function () {
+  const currentEl = document.getElementById(&#x27;current&#x27;);
+  const historyEl = document.getElementById(&#x27;history&#x27;);
+
+  let current = &#x27;0&#x27;;      // string being typed
+  let previous = null;    // stored operand (number)
+  let operator = null;    // pending operator
+  let justEvaluated = false;
+
+  const ops = {
+    &#x27;+&#x27;: (a, b) =&gt; a + b,
+    &#x27;-&#x27;: (a, b) =&gt; a - b,
+    &#x27;*&#x27;: (a, b) =&gt; a * b,
+    &#x27;/&#x27;: (a, b) =&gt; b === 0 ? NaN : a / b,
+  };
+  const symbols = { &#x27;+&#x27;: &#x27;+&#x27;, &#x27;-&#x27;: &#x27;−&#x27;, &#x27;*&#x27;: &#x27;×&#x27;, &#x27;/&#x27;: &#x27;÷&#x27; };
+
+  function format(n) {
+    if (!isFinite(n)) return &#x27;Error&#x27;;
+    // Trim float noise, keep reasonable precision.
+    const rounded = Math.round((n + Number.EPSILON) * 1e10) / 1e10;
+    return String(rounded);
+  }
+
+  function render() {
+    currentEl.textContent = current;
+    historyEl.textContent =
+      previous !== null &amp;&amp; operator
+        ? `${format(previous)} ${symbols[operator]}`
+        : &#x27;&#x27;;
+  }
+
+  function inputDigit(d) {
+    if (justEvaluated) { current = &#x27;0&#x27;; justEvaluated = false; }
+    current = current === &#x27;0&#x27; ? d : current + d;
+  }
+
+  function inputDecimal() {
+    if (justEvaluated) { current = &#x27;0&#x27;; justEvaluated = false; }
+    if (!current.includes(&#x27;.&#x27;)) current += &#x27;.&#x27;;
+  }
+
+  function chooseOperator(nextOp) {
+    const value = parseFloat(current);
+    if (previous === null) {
+      previous = value;
+    } else if (operator &amp;&amp; !justEvaluated) {
+      previous = ops[operator](previous, value);
+    }
+    operator = nextOp;
+    current = format(previous);
+    justEvaluated = false;
+    // After choosing an operator, next digit starts fresh.
+    pendingFresh = true;
+  }
+
+  let pendingFresh = false;
+
+  function inputDigitGuarded(d) {
+    if (pendingFresh) { current = &#x27;0&#x27;; pendingFresh = false; }
+    inputDigit(d);
+  }
+  function inputDecimalGuarded() {
+    if (pendingFresh) { current = &#x27;0&#x27;; pendingFresh = false; }
+    inputDecimal();
+  }
+
+  function equals() {
+    if (operator === null || previous === null) return;
+    const value = parseFloat(current);
+    const result = ops[operator](previous, value);
+    historyEl.textContent = `${format(previous)} ${symbols[operator]} ${format(value)} =`;
+    current = format(result);
+    previous = null;
+    operator = null;
+    justEvaluated = true;
+    pendingFresh = false;
+    currentEl.textContent = current;
+  }
+
+  function clearAll() {
+    current = &#x27;0&#x27;;
+    previous = null;
+    operator = null;
+    justEvaluated = false;
+    pendingFresh = false;
+  }
+
+  function toggleSign() {
+    if (current === &#x27;0&#x27;) return;
+    current = current.startsWith(&#x27;-&#x27;) ? current.slice(1) : &#x27;-&#x27; + current;
+  }
+
+  function percent() {
+    current = format(parseFloat(current) / 100);
+    justEvaluated = true;
+  }
+
+  document.querySelector(&#x27;.keys&#x27;).addEventListener(&#x27;click&#x27;, (e) =&gt; {
+    const btn = e.target.closest(&#x27;button&#x27;);
+    if (!btn) return;
+
+    if (btn.dataset.num !== undefined) {
+      inputDigitGuarded(btn.dataset.num);
+    } else if (btn.dataset.op !== undefined) {
+      chooseOperator(btn.dataset.op);
+    } else {
+      switch (btn.dataset.action) {
+        case &#x27;decimal&#x27;: inputDecimalGuarded(); break;
+        case &#x27;equals&#x27;: equals(); return;
+        case &#x27;clear&#x27;: clearAll(); break;
+        case &#x27;sign&#x27;: toggleSign(); break;
+        case &#x27;percent&#x27;: percent(); break;
+      }
+    }
+    render();
+  });
+
+  // Keyboard support
+  window.addEventListener(&#x27;keydown&#x27;, (e) =&gt; {
+    if (e.key &gt;= &#x27;0&#x27; &amp;&amp; e.key &lt;= &#x27;9&#x27;) inputDigitGuarded(e.key);
+    else if (e.key === &#x27;.&#x27;) inputDecimalGuarded();
+    else if ([&#x27;+&#x27;, &#x27;-&#x27;, &#x27;*&#x27;, &#x27;/&#x27;].includes(e.key)) chooseOperator(e.key);
+    else if (e.key === &#x27;Enter&#x27; || e.key === &#x27;=&#x27;) { e.preventDefault(); equals(); return; }
+    else if (e.key === &#x27;Escape&#x27;) clearAll();
+    else if (e.key === &#x27;%&#x27;) percent();
+    else if (e.key === &#x27;Backspace&#x27;) {
+      current = current.length &gt; 1 ? current.slice(0, -1) : &#x27;0&#x27;;
+    } else return;
+    render();
+  });
+
+  render();
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div><div class=col><div class=colh style="color:#10A37F">CODEX</div><pre>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Calculator&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main class=&quot;calculator&quot; aria-label=&quot;Calculator&quot;&gt;
+      &lt;output class=&quot;display&quot; id=&quot;display&quot; aria-live=&quot;polite&quot;&gt;0&lt;/output&gt;
+
+      &lt;section class=&quot;keys&quot; aria-label=&quot;Calculator keys&quot;&gt;
+        &lt;button class=&quot;key key-muted&quot; data-action=&quot;clear&quot;&gt;AC&lt;/button&gt;
+        &lt;button class=&quot;key key-muted&quot; data-action=&quot;delete&quot;&gt;DEL&lt;/button&gt;
+        &lt;button class=&quot;key key-muted&quot; data-value=&quot;%&quot;&gt;%&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;/&quot;&gt;÷&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;7&quot;&gt;7&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;8&quot;&gt;8&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;9&quot;&gt;9&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;*&quot;&gt;×&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;4&quot;&gt;4&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;5&quot;&gt;5&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;6&quot;&gt;6&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;-&quot;&gt;−&lt;/button&gt;
+
+        &lt;button class=&quot;key&quot; data-value=&quot;1&quot;&gt;1&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;2&quot;&gt;2&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;3&quot;&gt;3&lt;/button&gt;
+        &lt;button class=&quot;key key-op&quot; data-value=&quot;+&quot;&gt;+&lt;/button&gt;
+
+        &lt;button class=&quot;key key-wide&quot; data-value=&quot;0&quot;&gt;0&lt;/button&gt;
+        &lt;button class=&quot;key&quot; data-value=&quot;.&quot;&gt;.&lt;/button&gt;
+        &lt;button class=&quot;key key-equals&quot; data-action=&quot;calculate&quot;&gt;=&lt;/button&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+
+    &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></div></div></div><footer>generated by arena ⚔</footer></div><script>
+function show(v){document.querySelectorAll('.view').forEach(e=>{e.hidden=(e.id!=='view-'+v)});
+ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.getAttribute('data-view')===v));}
+function sz(id,w,btn){document.getElementById('pf-'+id).style.width=w;
+ btn.parentElement.querySelectorAll('button').forEach(b=>b.style.borderColor='');btn.style.borderColor='#d946ef';}
+function cp(id,btn){navigator.clipboard.writeText(document.getElementById('src-'+id).textContent);
+ var t=btn.textContent;btn.textContent='copied ✓';setTimeout(()=>btn.textContent=t,1200);}
+</script></body></html>

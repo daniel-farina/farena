@@ -1,0 +1,39 @@
+{
+  "ts": "20260530-102544",
+  "date": "20260530",
+  "prompt": "create a calculator",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "codex"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "claude-opus-4-8",
+      "ok": true,
+      "wall": 39.73699998855591,
+      "lines": 249,
+      "bytes": 6857,
+      "lps": 6.2662002685585465,
+      "main_html": "calculator.html",
+      "shot": "claude.png"
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "gpt-5.5",
+      "ok": true,
+      "wall": 53.0939998626709,
+      "lines": 275,
+      "bytes": 6253,
+      "lps": 5.179492988120976,
+      "main_html": "index.html",
+      "shot": "codex.png"
+    }
+  ],
+  "best": 39.73699998855591
+}

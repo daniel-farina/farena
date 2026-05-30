@@ -1,0 +1,53 @@
+{
+  "ts": "20260530-103659",
+  "date": "20260530",
+  "prompt": "create a calculator, do not ask me any quesitons. Do your best.",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "grok",
+    "codex"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "claude-opus-4-8",
+      "ok": true,
+      "wall": 43.33800005912781,
+      "lines": 302,
+      "bytes": 8233,
+      "lps": 6.968480307996886,
+      "main_html": "calculator.html",
+      "shot": "claude.png"
+    },
+    {
+      "model": "grok",
+      "label": "GROK",
+      "color": "#E5E7EB",
+      "model_name": "grok-build",
+      "ok": true,
+      "wall": 64.71500015258789,
+      "lines": 1200,
+      "bytes": 35727,
+      "lps": 18.542841646767936,
+      "main_html": "calculator.html",
+      "shot": "grok.png"
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "gpt-5.5",
+      "ok": true,
+      "wall": 80.66599988937378,
+      "lines": 412,
+      "bytes": 9845,
+      "lps": 5.107480234113768,
+      "main_html": "index.html",
+      "shot": "codex.png"
+    }
+  ],
+  "best": 43.33800005912781
+}

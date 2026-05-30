@@ -1,0 +1,53 @@
+{
+  "ts": "20260529-224926",
+  "date": "20260529",
+  "prompt": "Create a single, self-contained, fully interactive HTML5 recreation of the classic Windows 98 operating system desktop environment. The entire experience must live in one HTML file (no external dependencies except an optional Tailwind CDN for styling convenience \u2014 prefer custom CSS for authenticity).\n\n### Mandatory Header\nAt the very top of the page (above the desktop area), display the text **\"Windows 98\"** in extremely large, bold, authentic retro font (minimum 56\u201372px). Directly below it in smaller but still prominent text, add **\"Second Edition\"** and **\"Build 4.10.2222\"** (or similar classic build number). Use a font stack that closely mimics Microsoft Sans Serif / Tahoma.\n\n### Visual & UX Authenticity\n- Exact Windows 98 color palette and 3D beveled look (use CSS box-shadows, inset borders, and gradients).\n- Classic teal desktop background (#008080) with a subtle repeating pattern or the famous Windows 98 wallpaper approximated in CSS.\n- All UI elements (buttons, title bars, scrollbars, menus) must feel 100% like Windows 98.\n- Desktop icons: My Computer, My Documents, Recycle Bin, Network Neighborhood, Internet Explorer, Outlook Express. Icons must be draggable.\n- Right-click context menus on the desktop and icons with period-accurate options.\n\n### Taskbar (bottom of screen)\n- Classic Start button (with the Windows logo) on the far left.\n- Clicking Start opens the full cascading Start Menu with these exact sections:\n  - Programs \u2192 Accessories \u2192 (Notepad, Paint, Calculator, Games)\n  - Documents\n  - Settings \u2192 Control Panel, Printers, Taskbar & Start Menu\n  - Find\n  - Help\n  - Run\u2026\n  - Shut Down\u2026\n- Middle section of taskbar shows buttons for every open window (click to focus or minimize).\n- Right side (system tray): live-updating digital clock, speaker/volume icon, and at least 2\u20133 other classic tray icons.\n\n### Window Management (core requirement)\nEvery window must support:\n- Dragging by the title bar\n- Resizing from any edge or corner\n- Minimize / Maximize / Restore / Close buttons that work correctly\n- Active window title bar is blue; inactive windows are gray\n- Proper z-index stacking (clicking any window brings it to the front)\n- Double-click title bar to maximize/restore\n\n### Built-in Applications (must be functional)\nImplement at least these classic programs with authentic interfaces:\n\n1. **Notepad** \u2013 Multi-line text editor with File menu (New, Open, Save As \u2013 use localStorage or download), Edit menu, and status bar.\n2. **Paint** \u2013 Drawing canvas with pencil, brush, eraser, color palette, line/rectangle/ellipse tools, and \u201cSave\u201d capability.\n3. **Calculator** \u2013 Fully working standard calculator (including memory functions).\n4. **File Explorer** \u2013 Two-pane view (folders on left, files on right). Clicking folders updates the right pane. Double-clicking files opens them in the correct application.\n5. **Internet Explorer** \u2013 Mock browser with address bar, Back/Forward/Home buttons, and a content area. Include a few fake pages and a fun \u201cThe page cannot be displayed\u201d error screen.\n6. **Solitaire** (Klondike) \u2013 Playable card game (use divs or canvas for cards).\n7. **Run** dialog (from Start menu) \u2013 Type the name of any built-in app to launch it.\n\n### Extra Authentic Details (highly encouraged)\n- Boot sequence on page load: Show the Windows 98 startup screen with logo, \u201cStarting Windows 98\u2026\u201d text, and animated progress bar before fading into the desktop.\n- Classic system sounds using Web Audio API (startup chime, button click, window open/close, error beep, shutdown sound).\n- Shutdown dialog with the three classic options (Shut Down, Restart, Cancel) and the iconic \u201cIt is now safe to turn off your computer\u201d screen.\n- \u201cAbout Windows 98\u201d dialog accessible from Start menu (shows version, registered user, etc.).\n- At least one classic error dialog (\u201cThis program has performed an illegal operation\u201d with the sad face icon).\n- Alt+Tab simulation for switching between open windows.\n- Easter eggs (e.g., clicking the clock shows a fun message, or specific desktop areas trigger 1998-era jokes).\n\n### Technical Requirements\n- 100% vanilla HTML + CSS + JavaScript (no frameworks required, though Tailwind via CDN is acceptable for speed).\n- Must run perfectly in Google Chrome (the target browser).\n- Fully responsive but optimized for a desktop 1024\u00d7768 or higher viewport.\n- Save the final file as `windows-98.html`.\n- After the code is complete, provide clear instructions (or automatically trigger) to open the file in Google Chrome.\n\nMake the emulator feel immersive, nostalgic, and as close to the real Windows 98 experience as possible while remaining fun and usable. Prioritize polish and attention to tiny details that make it feel authentic.",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "grok",
+    "codex"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "",
+      "ok": false,
+      "wall": 0.0,
+      "lines": 0,
+      "bytes": 0,
+      "lps": 0,
+      "main_html": null,
+      "shot": null
+    },
+    {
+      "model": "grok",
+      "label": "GROK",
+      "color": "#E5E7EB",
+      "model_name": "grok-build",
+      "ok": true,
+      "wall": 226.6599998474121,
+      "lines": 2896,
+      "bytes": 88608,
+      "lps": 12.776846386436036,
+      "main_html": null,
+      "shot": null
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "",
+      "ok": false,
+      "wall": 0.0,
+      "lines": 0,
+      "bytes": 0,
+      "lps": 0,
+      "main_html": null,
+      "shot": null
+    }
+  ],
+  "best": 226.6599998474121
+}
