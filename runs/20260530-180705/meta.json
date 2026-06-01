@@ -17,9 +17,242 @@
       "model_name": "claude-opus-4-8",
       "ok": true,
       "wall": 682.9920001029968,
-      "lines": 4456,
+      "lines": 2414,
       "bytes": 761612,
-      "lps": 6.524234543491029,
+      "lps": 3.534448426388542,
+      "files": 46,
+      "file_list": [
+        {
+          "path": "win98/README.md",
+          "bytes": 2573,
+          "lines": 65
+        },
+        {
+          "path": "win98/apps.js",
+          "bytes": 18386,
+          "lines": 360
+        },
+        {
+          "path": "win98/drive.js",
+          "bytes": 3720,
+          "lines": 78
+        },
+        {
+          "path": "win98/gallery.html",
+          "bytes": 2335,
+          "lines": 41
+        },
+        {
+          "path": "win98/gen-icons.js",
+          "bytes": 5273,
+          "lines": 109
+        },
+        {
+          "path": "win98/icons/calc.svg",
+          "bytes": 956,
+          "lines": 4
+        },
+        {
+          "path": "win98/icons/cd.svg",
+          "bytes": 505,
+          "lines": 5
+        },
+        {
+          "path": "win98/icons/computer.svg",
+          "bytes": 696,
+          "lines": 8
+        },
+        {
+          "path": "win98/icons/drive.svg",
+          "bytes": 376,
+          "lines": 5
+        },
+        {
+          "path": "win98/icons/find.svg",
+          "bytes": 208,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/floppy.svg",
+          "bytes": 458,
+          "lines": 6
+        },
+        {
+          "path": "win98/icons/folder.svg",
+          "bytes": 265,
+          "lines": 3
+        },
+        {
+          "path": "win98/icons/help.svg",
+          "bytes": 207,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/ie.svg",
+          "bytes": 485,
+          "lines": 5
+        },
+        {
+          "path": "win98/icons/media.svg",
+          "bytes": 241,
+          "lines": 3
+        },
+        {
+          "path": "win98/icons/mines.svg",
+          "bytes": 208,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/notepad.svg",
+          "bytes": 486,
+          "lines": 7
+        },
+        {
+          "path": "win98/icons/paint.svg",
+          "bytes": 208,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/programs.svg",
+          "bytes": 313,
+          "lines": 3
+        },
+        {
+          "path": "win98/icons/recycle.svg",
+          "bytes": 211,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/run.svg",
+          "bytes": 208,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/settings.svg",
+          "bytes": 210,
+          "lines": 1
+        },
+        {
+          "path": "win98/icons/shutdown.svg",
+          "bytes": 325,
+          "lines": 4
+        },
+        {
+          "path": "win98/icons/sound.svg",
+          "bytes": 343,
+          "lines": 4
+        },
+        {
+          "path": "win98/index.html",
+          "bytes": 4199,
+          "lines": 108
+        },
+        {
+          "path": "win98/os.js",
+          "bytes": 11648,
+          "lines": 271
+        },
+        {
+          "path": "win98/package-lock.json",
+          "bytes": 35839,
+          "lines": 1012
+        },
+        {
+          "path": "win98/package.json",
+          "bytes": 298,
+          "lines": 17
+        },
+        {
+          "path": "win98/shots/01-bios.png",
+          "bytes": 9451,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/02-splash.png",
+          "bytes": 40665,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/03-desktop.png",
+          "bytes": 24353,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/04-startmenu.png",
+          "bytes": 31159,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/05-app-notepad.png",
+          "bytes": 28222,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/06-app-paint.png",
+          "bytes": 33906,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/07-app-calc.png",
+          "bytes": 35179,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/08-app-mines.png",
+          "bytes": 35196,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/09-app-mycomputer.png",
+          "bytes": 27670,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/10-app-ie.png",
+          "bytes": 60406,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/11-app-media.png",
+          "bytes": 58084,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/12-app-recycle.png",
+          "bytes": 61458,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/13-app-documents.png",
+          "bytes": 52227,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/14-all-open.png",
+          "bytes": 51946,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/15-minesweeper-played.png",
+          "bytes": 52680,
+          "lines": null
+        },
+        {
+          "path": "win98/shots/16-shutdown-dialog.png",
+          "bytes": 49921,
+          "lines": null
+        },
+        {
+          "path": "win98/sound.js",
+          "bytes": 3421,
+          "lines": 74
+        },
+        {
+          "path": "win98/style.css",
+          "bytes": 14488,
+          "lines": 215
+        }
+      ],
       "main_html": "win98/index.html",
       "shot": "claude.png",
       "clip": null
@@ -31,9 +264,22 @@
       "model_name": "gpt-5.5",
       "ok": true,
       "wall": 262.327999830246,
-      "lines": 1080,
+      "lines": 1082,
       "bytes": 31150,
-      "lps": 4.116983321257641,
+      "lps": 4.124607364445155,
+      "files": 2,
+      "file_list": [
+        {
+          "path": "README.md",
+          "bytes": 306,
+          "lines": 6
+        },
+        {
+          "path": "index.html",
+          "bytes": 30844,
+          "lines": 1076
+        }
+      ],
       "main_html": "index.html",
       "shot": "codex.png",
       "clip": null
@@ -45,9 +291,92 @@
       "model_name": "grok-build",
       "ok": true,
       "wall": 0.0,
-      "lines": 1868,
-      "bytes": 101845,
+      "lines": 1473,
+      "bytes": 92329,
       "lps": 0,
+      "files": 16,
+      "file_list": [
+        {
+          "path": "assets/boot_logo.png",
+          "bytes": 12405,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_calc.png",
+          "bytes": 605,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_control.png",
+          "bytes": 312,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_dos.png",
+          "bytes": 435,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_folder.png",
+          "bytes": 191,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_ie.png",
+          "bytes": 546,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_minesweeper.png",
+          "bytes": 333,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_my_computer.png",
+          "bytes": 296,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_notepad.png",
+          "bytes": 286,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_paint.png",
+          "bytes": 628,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_recycle_empty.png",
+          "bytes": 403,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_recycle_full.png",
+          "bytes": 348,
+          "lines": null
+        },
+        {
+          "path": "assets/icon_solitaire.png",
+          "bytes": 482,
+          "lines": null
+        },
+        {
+          "path": "assets/wallpaper.png",
+          "bytes": 9547,
+          "lines": null
+        },
+        {
+          "path": "generate_assets.py",
+          "bytes": 11579,
+          "lines": 320
+        },
+        {
+          "path": "index.html",
+          "bytes": 53933,
+          "lines": 1153
+        }
+      ],
       "main_html": "index.html",
       "shot": "grok.png",
       "clip": null
@@ -59,9 +388,57 @@
       "model_name": "auto",
       "ok": true,
       "wall": 274.01994512509555,
-      "lines": 1122,
+      "lines": 1057,
       "bytes": 54880,
-      "lps": 4.094592455625026,
+      "lps": 3.857383445272418,
+      "files": 9,
+      "file_list": [
+        {
+          "path": "win98/assets/icon-calculator.png",
+          "bytes": 1638,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-internet-explorer.png",
+          "bytes": 1954,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-internet.png",
+          "bytes": 1921,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-minesweeper.png",
+          "bytes": 1246,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-my-computer.png",
+          "bytes": 1000,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-notepad.png",
+          "bytes": 1556,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-paint.png",
+          "bytes": 1825,
+          "lines": null
+        },
+        {
+          "path": "win98/assets/icon-recycle-bin.png",
+          "bytes": 1077,
+          "lines": null
+        },
+        {
+          "path": "win98/index.html",
+          "bytes": 42663,
+          "lines": 1057
+        }
+      ],
       "main_html": "win98/index.html",
       "shot": "cursor.png",
       "clip": null
