@@ -1,0 +1,71 @@
+{
+  "ts": "20260530-153429",
+  "date": "20260530",
+  "prompt": "create a windows 98 clone in html, use any tools you have to create image or any media as needed, try to add sound,do not ask me any quesitons. Do your best.",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "codex",
+    "grok",
+    "cursor"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "claude-opus-4-8",
+      "ok": true,
+      "wall": 474.27100014686584,
+      "lines": 1725,
+      "bytes": 80187,
+      "lps": 3.6371610312792164,
+      "main_html": "index.html",
+      "shot": "claude.png",
+      "clip": null
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "gpt-5.5",
+      "ok": true,
+      "wall": 318.01399993896484,
+      "lines": 1294,
+      "bytes": 32504,
+      "lps": 4.06900325221013,
+      "main_html": "index.html",
+      "shot": "codex.png",
+      "clip": null
+    },
+    {
+      "model": "grok",
+      "label": "GROK",
+      "color": "#E5E7EB",
+      "model_name": "grok-build",
+      "ok": true,
+      "wall": 318.15700006484985,
+      "lines": 3802,
+      "bytes": 616669,
+      "lps": 11.95007496055419,
+      "main_html": "windows98-standalone.html",
+      "shot": "grok.png",
+      "clip": null
+    },
+    {
+      "model": "cursor",
+      "label": "CURSOR",
+      "color": "#4aa3ff",
+      "model_name": "auto",
+      "ok": true,
+      "wall": 233.99107837490737,
+      "lines": 26944,
+      "bytes": 6974346,
+      "lps": 115.14968941178832,
+      "main_html": "index.html",
+      "shot": "cursor.png",
+      "clip": null
+    }
+  ],
+  "best": 233.99107837490737
+}

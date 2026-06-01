@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows 95</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gray: #c0c0c0;
+    --dark: #808080;
+    --darker: #404040;
+    --light: #ffffff;
+    --blue: #000080;
+    --teal: #008080;
+  }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: "Pixelated MS Sans Serif", "MS Sans Serif", Tahoma, sans-serif;
+    font-size: 11px;
+    user-select: none;
+    cursor: default;
+  }
+  body { background: var(--teal); }
+
+  /* ---------- Generic 95 borders ---------- */
+  .outset {
+    border-top: 2px solid var(--light);
+    border-left: 2px solid var(--light);
+    border-bottom: 2px solid var(--darker);
+    border-right: 2px solid var(--darker);
+    box-shadow: inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--gray);
+  }
+  .inset {
+    border-top: 2px solid var(--darker);
+    border-left: 2px solid var(--darker);
+    border-bottom: 2px solid var(--light);
+    border-right: 2px solid var(--light);
+    box-shadow: inset 1px 1px 0 var(--dark);
+  }
+
+  /* ---------- Desktop ---------- */
+  #desktop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 28px;
+    overflow: hidden;
+  }
+  .desktop-icon {
+    position: absolute;
+    width: 75px;
+    text-align: center;
+    color: #fff;
+    cursor: default;
+    padding: 4px 2px;
+  }
+  .desktop-icon .ico { font-size: 32px; line-height: 1; height: 34px; display: block; }
+  .desktop-icon .label {
+    display: inline-block;
+    margin-top: 3px;
+    padding: 1px 3px;
+    font-size: 11px;
+    text-shadow: 1px 1px 0 #000;
+  }
+  .desktop-icon.selected .label {
+    background: var(--blue);
+    color: #fff;
+    outline: 1px dotted #fff;
+  }
+  .desktop-icon.selected .ico { filter: drop-shadow(0 0 0 #000); opacity: 0.85; }
+
+  /* ---------- Windows ---------- */
+  .window {
+    position: absolute;
+    background: var(--gray);
+    min-width: 160px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 1px 1px 0 #000;
+  }
+  .titlebar {
+    background: linear-gradient(90deg, var(--blue), #1084d0);
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    padding: 2px 2px 2px 3px;
+    height: 20px;
+    flex: none;
+    cursor: default;
+  }
+  .window.inactive .titlebar {
+    background: linear-gradient(90deg, var(--dark), #b5b5b5);
+    color: #d8d8d8;
+  }
+  .titlebar .tb-ico { margin-right: 4px; font-size: 13px; }
+  .titlebar .tb-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .titlebar .tb-btns { display: flex; gap: 2px; }
+  .tb-btn {
+    width: 16px; height: 14px;
+    background: var(--gray);
+    font-size: 9px;
+    line-height: 10px;
+    font-weight: bold;
+    text-align: center;
+    color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Marlett", sans-serif;
+  }
+  .tb-btn:active { box-shadow: inset 1px 1px 0 var(--dark); border-top-color: var(--darker); border-left-color: var(--darker); }
+  .menubar {
+    display: flex;
+    padding: 1px 0;
+    flex: none;
+    border-bottom: 1px solid var(--dark);
+  }
+  .menubar .menu-item { padding: 2px 7px; }
+  .menubar .menu-item:hover { background: var(--blue); color: #fff; }
+  .window-body {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    margin: 2px;
+    display: flex;
+    flex-direction: column;
+  }
+  .resizer {
+    position: absolute;
+    width: 12px; height: 12px;
+    right: 0; bottom: 0;
+    cursor: nwse-resize;
+    z-index: 5;
+  }
+  .statusbar {
+    flex: none;
+    display: flex;
+    gap: 2px;
+    padding: 1px;
+  }
+  .statusbar .panel { padding: 2px 5px; flex: 1; }
+
+  /* ---------- Buttons & form ---------- */
+  button.btn95 {
+    background: var(--gray);
+    padding: 3px 10px;
+    font-family: inherit;
+    font-size: 11px;
+    min-width: 60px;
+    cursor: default;
+  }
+  button.btn95:active { box-shadow: inset 1px 1px 1px var(--darker); }
+  button.btn95:focus { outline: 1px dotted #000; outline-offset: -4px; }
+
+  /* ---------- Taskbar ---------- */
+  #taskbar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 28px;
+    background: var(--gray);
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    gap: 4px;
+    z-index: 99999;
+  }
+  #start-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: bold;
+    padding: 2px 6px 2px 4px;
+    height: 22px;
+    flex: none;
+  }
+  #start-btn.active { box-shadow: inset 1px 1px 1px var(--darker); border-top-color: var(--darker); border-left-color: var(--darker); }
+  #start-btn .logo {
+    display: inline-block;
+    width: 16px; height: 16px;
+    background:
+      linear-gradient(135deg, #f00 0 50%, #fff 0) ,
+      linear-gradient(135deg, #0f0 0 50%, #00f 0);
+    position: relative;
+  }
+  .start-logo {
+    width: 18px; height: 16px;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    transform: perspective(40px) rotateY(-12deg);
+  }
+  .start-logo i { display: block; }
+  .start-logo i:nth-child(1){ background:#f33; }
+  .start-logo i:nth-child(2){ background:#3f3; }
+  .start-logo i:nth-child(3){ background:#33f; }
+  .start-logo i:nth-child(4){ background:#ff3; }
+
+  #task-divider { width: 2px; height: 22px; }
+
+  #task-buttons { flex: 1; display: flex; gap: 3px; overflow: hidden; }
+  .task-btn {
+    flex: 0 1 160px;
+    min-width: 40px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .task-btn .t-label { overflow: hidden; text-overflow: ellipsis; }
+  .task-btn.active {
+    box-shadow: inset 1px 1px 1px var(--darker);
+    border-top-color: var(--darker); border-left-color: var(--darker);
+    background-image: repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 2px);
+    font-weight: bold;
+  }
+
+  #tray {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    padding: 0 8px;
+  }
+  #clock { font-size: 11px; }
+
+  /* ---------- Start menu ---------- */
+  #start-menu {
+    position: absolute;
+    bottom: 28px; left: 2px;
+    width: 200px;
+    background: var(--gray);
+    display: none;
+    z-index: 99998;
+    flex-direction: row;
+  }
+  #start-menu.open { display: flex; }
+  #start-sidebar {
+    width: 26px;
+    background: var(--dark);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px 4px;
+    letter-spacing: 1px;
+  }
+  #start-sidebar b { color: #fff; }
+  #start-sidebar span { color: var(--gray); }
+  #start-list { flex: 1; padding: 2px; }
+  .start-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 6px;
+    font-size: 12px;
+  }
+  .start-entry .se-ico { font-size: 20px; width: 22px; text-align: center; }
+  .start-entry:hover { background: var(--blue); color: #fff; }
+  .start-entry.has-sub::after { content: "▶"; margin-left: auto; font-size: 8px; }
+  .start-sep { height: 2px; margin: 2px 1px; border-top: 1px solid var(--dark); border-bottom: 1px solid #fff; }
+
+  .submenu {
+    position: absolute;
+    background: var(--gray);
+    min-width: 150px;
+    padding: 2px;
+    display: none;
+    z-index: 99999;
+  }
+  .submenu.open { display: block; }
+
+  /* ---------- App-specific ---------- */
+  textarea.notepad {
+    flex: 1;
+    width: 100%;
+    border: none;
+    resize: none;
+    font-family: "Lucida Console", monospace;
+    font-size: 12px;
+    padding: 2px;
+    outline: none;
+  }
+  textarea.notepad.wrap { white-space: pre-wrap; }
+  textarea.notepad.nowrap { white-space: pre; overflow: auto; }
+
+  /* Minesweeper */
+  .ms-wrap { padding: 6px; background: var(--gray); display:flex; flex-direction:column; gap:6px; }
+  .ms-head { display:flex; justify-content:space-between; align-items:center; padding:4px; }
+  .ms-counter {
+    background:#000; color:#f00; font-family:"Lucida Console",monospace;
+    font-size:20px; padding:1px 3px; letter-spacing:1px; font-weight:bold;
+  }
+  .ms-face { width:26px; height:26px; font-size:15px; display:flex; align-items:center; justify-content:center; }
+  .ms-grid { display:grid; gap:0; }
+  .ms-cell {
+    width:18px; height:18px; font-size:12px; font-weight:bold;
+    display:flex; align-items:center; justify-content:center;
+    line-height:1;
+  }
+  .ms-cell.covered { cursor:default; }
+  .ms-cell.revealed {
+    border:1px solid var(--dark);
+    box-shadow:none;
+  }
+  .ms-c1{color:#0000ff}.ms-c2{color:#008000}.ms-c3{color:#ff0000}.ms-c4{color:#000080}
+  .ms-c5{color:#800000}.ms-c6{color:#008080}.ms-c7{color:#000}.ms-c8{color:#808080}
+
+  /* Explorer / file list */
+  .explorer { display:flex; flex-direction:column; flex:1; }
+  .icon-grid {
+    flex:1; background:#fff; padding:6px; overflow:auto;
+    display:flex; flex-wrap:wrap; align-content:flex-start; gap:6px;
+  }
+  .file-icon {
+    width:72px; text-align:center; padding:4px; cursor:default;
+  }
+  .file-icon .fi-ico { font-size:30px; display:block; height:32px; }
+  .file-icon .fi-label { font-size:11px; display:inline-block; padding:1px 2px; word-break:break-word; }
+  .file-icon.selected .fi-label { background:var(--blue); color:#fff; }
+
+  /* Paint */
+  .paint-wrap { display:flex; flex:1; }
+  .paint-tools { width:54px; display:flex; flex-wrap:wrap; gap:2px; padding:2px; align-content:flex-start; }
+  .paint-tool { width:23px; height:23px; display:flex; align-items:center; justify-content:center; font-size:13px; }
+  .paint-tool.active { box-shadow: inset 1px 1px 1px var(--darker); border-top-color: var(--darker); border-left-color: var(--darker); }
+  .paint-main { flex:1; display:flex; flex-direction:column; }
+  .paint-canvas-wrap { flex:1; background:var(--dark); padding:4px; overflow:auto; }
+  #paint-canvas { background:#fff; cursor:crosshair; display:block; }
+  .palette { display:flex; flex-wrap:wrap; gap:1px; padding:3px; }
+  .swatch { width:14px; height:14px; border:1px solid #000; cursor:default; }
+
+  /* Dialog / About */
+  .dialog-body { padding:14px; display:flex; gap:14px; align-items:flex-start; }
+  .dialog-body .d-ico { font-size:36px; }
+  .dialog-btns { display:flex; justify-content:center; gap:8px; padding:0 14px 14px; }
+
+  .help-content { padding:10px; background:#fff; flex:1; overflow:auto; line-height:1.5; font-size:12px; }
+  .help-content h2 { font-size:14px; margin-bottom:6px; }
+  .help-content ul { margin:6px 0 6px 18px; }
+  .help-content code { background:#eee; padding:0 3px; }
+
+  /* Clock app */
+  .clock-app { flex:1; display:flex; align-items:center; justify-content:center; background:#fff; flex-direction:column; gap:6px; }
+  .clock-time { font-size:34px; font-family:"Lucida Console",monospace; }
+  .clock-date { font-size:13px; }
+
+  /* selection box */
+  #select-box { position:absolute; border:1px dotted #fff; background:rgba(0,0,128,0.2); display:none; z-index:1; }
+
+  .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<div id="desktop">
+  <div id="select-box"></div>
+</div>
+
+<!-- Start menu -->
+<div id="start-menu">
+  <div id="start-sidebar"><b>Windows</b><span>95</span></div>
+  <div id="start-list">
+    <div class="start-entry has-sub" data-sub="programs"><span class="se-ico">📁</span> Programs</div>
+    <div class="start-entry has-sub" data-sub="documents"><span class="se-ico">📄</span> Documents</div>
+    <div class="start-entry" data-app="settings"><span class="se-ico">⚙️</span> Settings</div>
+    <div class="start-entry" data-app="find"><span class="se-ico">🔍</span> Find</div>
+    <div class="start-entry" data-app="help"><span class="se-ico">❓</span> Help</div>
+    <div class="start-entry" data-app="run"><span class="se-ico">🏃</span> Run...</div>
+    <div class="start-sep"></div>
+    <div class="start-entry" data-app="shutdown"><span class="se-ico">🔌</span> Shut Down...</div>
+  </div>
+</div>
+
+<div class="submenu" id="sub-programs">
+  <div class="start-entry" data-app="notepad"><span class="se-ico">📝</span> Notepad</div>
+  <div class="start-entry" data-app="paint"><span class="se-ico">🎨</span> Paint</div>
+  <div class="start-entry" data-app="minesweeper"><span class="se-ico">💣</span> Minesweeper</div>
+  <div class="start-entry" data-app="explorer"><span class="se-ico">📁</span> My Computer</div>
+  <div class="start-entry" data-app="clock"><span class="se-ico">🕐</span> Clock</div>
+  <div class="start-entry" data-app="calc"><span class="se-ico">🧮</span> Calculator</div>
+</div>
+<div class="submenu" id="sub-documents">
+  <div class="start-entry" data-doc="readme"><span class="se-ico">📄</span> Readme.txt</div>
+  <div class="start-entry" data-doc="todo"><span class="se-ico">📄</span> Todo.txt</div>
+</div>
+
+<!-- Taskbar -->
+<div id="taskbar" class="outset">
+  <div id="start-btn" class="outset">
+    <span class="start-logo"><i></i><i></i><i></i><i></i></span>
+    <span>Start</span>
+  </div>
+  <div id="task-divider" class="inset"></div>
+  <div id="task-buttons"></div>
+  <div id="tray" class="inset">
+    <span id="tray-vol">🔊</span>
+    <span id="clock">12:00 PM</span>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Window Manager
+   ============================================================ */
+const WM = {
+  zTop: 100,
+  windows: new Map(),
+  active: null,
+  seq: 0,
+};
+
+const desktop = document.getElementById('desktop');
+const taskButtons = document.getElementById('task-buttons');
+
+function bringToFront(win) {
+  WM.zTop += 1;
+  win.el.style.zIndex = WM.zTop;
+  if (WM.active && WM.active !== win) {
+    WM.active.el.classList.add('inactive');
+    if (WM.active.taskBtn) WM.active.taskBtn.classList.remove('active');
+  }
+  win.el.classList.remove('inactive');
+  if (win.taskBtn) win.taskBtn.classList.add('active');
+  WM.active = win;
+}
+
+function makeWindow(opts) {
+  const id = 'win' + (++WM.seq);
+  const el = document.createElement('div');
+  el.className = 'window outset';
+  el.style.left = (opts.x ?? (60 + (WM.seq*22)%180)) + 'px';
+  el.style.top = (opts.y ?? (40 + (WM.seq*22)%140)) + 'px';
+  el.style.width = (opts.w ?? 360) + 'px';
+  el.style.height = (opts.h ?? 260) + 'px';
+
+  el.innerHTML = `
+    <div class="titlebar">
+      <span class="tb-ico">${opts.icon || '📄'}</span>
+      <span class="tb-title">${opts.title}</span>
+      <span class="tb-btns">
+        <span class="tb-btn" data-act="min">_</span>
+        <span class="tb-btn" data-act="max">□</span>
+        <span class="tb-btn" data-act="close">✕</span>
+      </span>
+    </div>
+    <div class="window-body"></div>
+    <div class="resizer"></div>
+  `;
+  desktop.appendChild(el);
+
+  const win = {
+    id, el, opts,
+    body: el.querySelector('.window-body'),
+    titlebar: el.querySelector('.titlebar'),
+    minimized: false, maximized: false,
+    prevRect: null,
+    taskBtn: null,
+  };
+  WM.windows.set(id, win);
+
+  // Title bar buttons
+  el.querySelector('[data-act="close"]').addEventListener('click', e => { e.stopPropagation(); closeWindow(win); });
+  el.querySelector('[data-act="min"]').addEventListener('click', e => { e.stopPropagation(); minimizeWindow(win); });
+  el.querySelector('[data-act="max"]').addEventListener('click', e => { e.stopPropagation(); toggleMax(win); });
+  win.titlebar.addEventListener('dblclick', () => toggleMax(win));
+
+  el.addEventListener('mousedown', () => bringToFront(win));
+
+  makeDraggable(win);
+  makeResizable(win);
+
+  // Taskbar button
+  const tb = document.createElement('div');
+  tb.className = 'task-btn outset';
+  tb.innerHTML = `<span>${opts.icon||'📄'}</span><span class="t-label">${opts.title}</span>`;
+  tb.addEventListener('click', () => {
+    if (win.minimized) { restoreWindow(win); bringToFront(win); }
+    else if (WM.active === win) { minimizeWindow(win); }
+    else { bringToFront(win); }
+  });
+  taskButtons.appendChild(tb);
+  win.taskBtn = tb;
+
+  bringToFront(win);
+  if (opts.build) opts.build(win);
+  return win;
+}
+
+function closeWindow(win) {
+  if (win.opts.onClose) win.opts.onClose(win);
+  win.el.remove();
+  if (win.taskBtn) win.taskBtn.remove();
+  WM.windows.delete(win.id);
+  if (WM.active === win) WM.active = null;
+}
+
+function minimizeWindow(win) {
+  win.minimized = true;
+  win.el.style.display = 'none';
+  win.taskBtn.classList.remove('active');
+  if (WM.active === win) WM.active = null;
+}
+function restoreWindow(win) {
+  win.minimized = false;
+  win.el.style.display = 'flex';
+}
+function toggleMax(win) {
+  if (win.maximized) {
+    win.el.style.left = win.prevRect.left;
+    win.el.style.top = win.prevRect.top;
+    win.el.style.width = win.prevRect.width;
+    win.el.style.height = win.prevRect.height;
+    win.maximized = false;
+  } else {
+    win.prevRect = { left: win.el.style.left, top: win.el.style.top, width: win.el.style.width, height: win.el.style.height };
+    win.el.style.left = '0px';
+    win.el.style.top = '0px';
+    win.el.style.width = desktop.clientWidth + 'px';
+    win.el.style.height = desktop.clientHeight + 'px';
+    win.maximized = true;
+  }
+}
+
+function makeDraggable(win) {
+  const tb = win.titlebar;
+  let sx, sy, ox, oy, dragging = false;
+  tb.addEventListener('mousedown', e => {
+    if (e.target.closest('.tb-btn')) return;
+    if (win.maximized) return;
+    dragging = true;
+    sx = e.clientX; sy = e.clientY;
+    ox = win.el.offsetLeft; oy = win.el.offsetTop;
+    bringToFront(win);
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    let nx = ox + (e.clientX - sx);
+    let ny = oy + (e.clientY - sy);
+    ny = Math.max(0, ny);
+    win.el.style.left = nx + 'px';
+    win.el.style.top = ny + 'px';
+  });
+  document.addEventListener('mouseup', () => dragging = false);
+}
+
+function makeResizable(win) {
+  const rz = win.el.querySelector('.resizer');
+  let sx, sy, ow, oh, resizing = false;
+  rz.addEventListener('mousedown', e => {
+    resizing = true;
+    sx = e.clientX; sy = e.clientY;
+    ow = win.el.offsetWidth; oh = win.el.offsetHeight;
+    e.preventDefault(); e.stopPropagation();
+    bringToFront(win);
+  });
+  document.addEventListener('mousemove', e => {
+    if (!resizing) return;
+    win.el.style.width = Math.max(160, ow + (e.clientX - sx)) + 'px';
+    win.el.style.height = Math.max(80, oh + (e.clientY - sy)) + 'px';
+  });
+  document.addEventListener('mouseup', () => resizing = false);
+}
+
+/* ============================================================
+   Virtual File System (in-memory)
+   ============================================================ */
+const FS = {
+  readme: "Welcome to Windows 95 (HTML Edition)!\r\n\r\nThis is a loving recreation of the classic\r\ndesktop, built entirely in a single HTML file.\r\n\r\nThings to try:\r\n  * Double-click desktop icons\r\n  * Open the Start menu\r\n  * Play Minesweeper\r\n  * Draw something in Paint\r\n  * Drag and resize windows\r\n\r\nEnjoy the nostalgia!",
+  todo: "TODO\r\n----\r\n[x] Boot up\r\n[x] Open Start menu\r\n[ ] Defrag the hard drive\r\n[ ] Find the Solitaire cards\r\n[ ] Upgrade to Windows 98",
+};
+
+/* ============================================================
+   APP LAUNCHERS
+   ============================================================ */
+const Apps = {};
+
+/* ---------- Notepad ---------- */
+Apps.notepad = function(content, fname) {
+  makeWindow({
+    title: (fname || 'Untitled') + ' - Notepad', icon: '📝', w: 420, h: 300,
+    build(win) {
+      win.body.innerHTML = `
+        <div class="menubar outset" style="border:none;box-shadow:none;">
+          <span class="menu-item" data-m="file">File</span>
+          <span class="menu-item" data-m="edit">Edit</span>
+          <span class="menu-item" data-m="format">Format</span>
+          <span class="menu-item" data-m="help">Help</span>
+        </div>
+        <textarea class="notepad wrap inset" spellcheck="false"></textarea>`;
+      const ta = win.body.querySelector('textarea');
+      ta.value = content || '';
+      win.body.querySelector('[data-m="format"]').addEventListener('click', () => {
+        ta.classList.toggle('wrap'); ta.classList.toggle('nowrap');
+      });
+      win.body.querySelector('[data-m="file"]').addEventListener('click', () => {
+        Apps.notepad('', 'Untitled');
+      });
+      win.body.querySelector('[data-m="help"]').addEventListener('click', () => showAbout());
+      win.body.querySelector('[data-m="edit"]').addEventListener('click', () => ta.focus());
+    }
+  });
+};
+
+/* ---------- Calculator ---------- */
+Apps.calc = function() {
+  makeWindow({
+    title: 'Calculator', icon: '🧮', w: 220, h: 250,
+    build(win) {
+      win.body.innerHTML = `
+        <input class="inset" id="calc-disp" readonly value="0"
+          style="text-align:right;font-size:16px;padding:4px;margin:3px;font-family:'Lucida Console',monospace;">
+        <div id="calc-keys" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:3px;flex:1;"></div>`;
+      const disp = win.body.querySelector('#calc-disp');
+      const keys = win.body.querySelector('#calc-keys');
+      let cur = '0', prev = null, op = null, reset = false;
+      const upd = () => disp.value = cur;
+      const layout = ['C','±','%','/','7','8','9','*','4','5','6','-','1','2','3','+','0','.','='];
+      const spans = {'=':2};
+      layout.forEach(k => {
+        const b = document.createElement('button');
+        b.className = 'btn95'; b.textContent = k; b.style.minWidth='0';
+        if (k === '0') b.style.gridColumn = 'span 2';
+        b.addEventListener('click', () => {
+          if (/[0-9]/.test(k)) {
+            if (cur === '0' || reset) { cur = k; reset = false; } else cur += k;
+          } else if (k === '.') { if (!cur.includes('.')) cur += '.'; }
+          else if (k === 'C') { cur='0'; prev=null; op=null; }
+          else if (k === '±') { cur = String(parseFloat(cur)*-1); }
+          else if (k === '%') { cur = String(parseFloat(cur)/100); }
+          else if (k === '=') {
+            if (op && prev !== null) { cur = String(calc(parseFloat(prev), parseFloat(cur), op)); op=null; prev=null; reset=true; }
+          } else { // operator
+            if (op && prev !== null && !reset) { cur = String(calc(parseFloat(prev), parseFloat(cur), op)); }
+            prev = cur; op = k; reset = true;
+          }
+          upd();
+        });
+        keys.appendChild(b);
+      });
+      function calc(a,b,o){ return o==='+'?a+b:o==='-'?a-b:o==='*'?a*b:o==='/'?(b?a/b:0):b; }
+    }
+  });
+};
+
+/* ---------- Clock ---------- */
+Apps.clock = function() {
+  makeWindow({
+    title: 'Clock', icon: '🕐', w: 240, h: 160,
+    build(win) {
+      win.body.innerHTML = `<div class="clock-app inset"><div class="clock-time">--:--:--</div><div class="clock-date"></div></div>`;
+      const t = win.body.querySelector('.clock-time');
+      const d = win.body.querySelector('.clock-date');
+      const tick = () => {
+        const now = new Date();
+        t.textContent = now.toLocaleTimeString();
+        d.textContent = now.toLocaleDateString(undefined, {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+      };
+      tick();
+      const iv = setInterval(tick, 1000);
+      win.opts.onClose = () => clearInterval(iv);
+    }
+  });
+};
+
+/* ---------- Minesweeper ---------- */
+Apps.minesweeper = function() {
+  const COLS=9, ROWS=9, MINES=10;
+  makeWindow({
+    title: 'Minesweeper', icon: '💣', w: 210, h: 280,
+    build(win) {
+      win.body.innerHTML = `
+        <div class="ms-wrap outset">
+          <div class="ms-head inset">
+            <span class="ms-counter ms-mines">010</span>
+            <button class="btn95 ms-face">🙂</button>
+            <span class="ms-counter ms-time">000</span>
+          </div>
+          <div class="ms-grid inset"></div>
+        </div>`;
+      const grid = win.body.querySelector('.ms-grid');
+      const face = win.body.querySelector('.ms-face');
+      const mineDisp = win.body.querySelector('.ms-mines');
+      const timeDisp = win.body.querySelector('.ms-time');
+      grid.style.gridTemplateColumns = `repeat(${COLS}, 18px)`;
+      let cells, started, dead, won, flags, timer, time;
+
+      function reset() {
+        cells = []; started=false; dead=false; won=false; flags=0; time=0;
+        clearInterval(timer);
+        timeDisp.textContent='000'; mineDisp.textContent=String(MINES).padStart(3,'0');
+        face.textContent='🙂';
+        grid.innerHTML='';
+        for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++){
+          const cell={r,c,mine:false,rev:false,flag:false,n:0,el:document.createElement('div')};
+          cell.el.className='ms-cell covered outset';
+          cell.el.addEventListener('click',()=>reveal(cell));
+          cell.el.addEventListener('contextmenu',e=>{e.preventDefault();flag(cell);});
+          grid.appendChild(cell.el);
+          cells.push(cell);
+        }
+      }
+      const at=(r,c)=> (r>=0&&r<ROWS&&c>=0&&c<COLS)?cells[r*COLS+c]:null;
+      const neigh=cell=>{const out=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(dr||dc){const n=at(cell.r+dr,cell.c+dc);if(n)out.push(n);}}return out;};
+
+      function plant(safe){
+        let placed=0;
+        while(placed<MINES){
+          const i=Math.floor(Math.random()*cells.length);
+          const cell=cells[i];
+          if(cell.mine||cell===safe||neigh(safe).includes(cell))continue;
+          cell.mine=true;placed++;
+        }
+        cells.forEach(c=>{c.n=neigh(c).filter(n=>n.mine).length;});
+      }
+      function flag(cell){
+        if(dead||won||cell.rev)return;
+        cell.flag=!cell.flag;
+        cell.el.textContent=cell.flag?'🚩':'';
+        flags+=cell.flag?1:-1;
+        mineDisp.textContent=String(Math.max(0,MINES-flags)).padStart(3,'0');
+      }
+      function reveal(cell){
+        if(dead||won||cell.flag||cell.rev)return;
+        if(!started){started=true;plant(cell);timer=setInterval(()=>{time++;timeDisp.textContent=String(Math.min(999,time)).padStart(3,'0');},1000);}
+        cell.rev=true;
+        cell.el.className='ms-cell revealed';
+        if(cell.mine){cell.el.textContent='💣';cell.el.style.background='#f00';boom();return;}
+        if(cell.n>0){cell.el.textContent=cell.n;cell.el.classList.add('ms-c'+cell.n);}
+        else{neigh(cell).forEach(reveal);}
+        checkWin();
+      }
+      function boom(){
+        dead=true;face.textContent='😵';clearInterval(timer);
+        cells.forEach(c=>{if(c.mine&&!c.rev){c.el.className='ms-cell revealed';c.el.textContent='💣';}});
+      }
+      function checkWin(){
+        if(cells.filter(c=>!c.rev).every(c=>c.mine)){
+          won=true;face.textContent='😎';clearInterval(timer);
+          cells.forEach(c=>{if(c.mine&&!c.flag){c.flag=true;c.el.textContent='🚩';}});
+        }
+      }
+      face.addEventListener('click',reset);
+      reset();
+      win.opts.onClose=()=>clearInterval(timer);
+    }
+  });
+};
+
+/* ---------- Paint ---------- */
+Apps.paint = function() {
+  makeWindow({
+    title: 'untitled - Paint', icon: '🎨', w: 460, h: 360,
+    build(win) {
+      win.body.innerHTML = `
+        <div class="paint-wrap">
+          <div class="paint-tools outset"></div>
+          <div class="paint-main">
+            <div class="paint-canvas-wrap inset"><canvas id="paint-canvas" width="380" height="240"></canvas></div>
+          </div>
+        </div>
+        <div class="palette outset"></div>`;
+      const canvas = win.body.querySelector('#paint-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      let tool='pencil', color='#000000', size=2, drawing=false, lastX,lastY, startX,startY, snapshot;
+
+      const tools=[['pencil','✏️'],['brush','🖌️'],['eraser','🧹'],['line','📏'],['rect','▭'],['fill','🪣']];
+      const toolbox = win.body.querySelector('.paint-tools');
+      tools.forEach(([t,ic])=>{
+        const b=document.createElement('div');
+        b.className='paint-tool outset'+(t===tool?' active':'');
+        b.textContent=ic; b.title=t;
+        b.addEventListener('click',()=>{tool=t;toolbox.querySelectorAll('.paint-tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');});
+        toolbox.appendChild(b);
+      });
+
+      const colors=['#000000','#808080','#800000','#808000','#008000','#008080','#000080','#800080',
+                    '#ffffff','#c0c0c0','#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff'];
+      const pal = win.body.querySelector('.palette');
+      colors.forEach(c=>{
+        const s=document.createElement('div');s.className='swatch';s.style.background=c;
+        s.addEventListener('click',()=>color=c);
+        pal.appendChild(s);
+      });
+
+      const pos=e=>{const r=canvas.getBoundingClientRect();return {x:Math.round((e.clientX-r.left)*(canvas.width/r.width)),y:Math.round((e.clientY-r.top)*(canvas.height/r.height))};};
+
+      canvas.addEventListener('mousedown',e=>{
+        const p=pos(e); drawing=true; startX=lastX=p.x; startY=lastY=p.y;
+        if(tool==='fill'){floodFill(p.x,p.y,color);drawing=false;return;}
+        if(tool==='line'||tool==='rect'){snapshot=ctx.getImageData(0,0,canvas.width,canvas.height);}
+        if(tool==='pencil'||tool==='brush'||tool==='eraser'){dot(p.x,p.y);}
+      });
+      canvas.addEventListener('mousemove',e=>{
+        if(!drawing)return;const p=pos(e);
+        if(tool==='line'){ctx.putImageData(snapshot,0,0);stroke();ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(p.x,p.y);ctx.stroke();}
+        else if(tool==='rect'){ctx.putImageData(snapshot,0,0);stroke();ctx.strokeRect(startX,startY,p.x-startX,p.y-startY);}
+        else if(tool==='pencil'||tool==='brush'||tool==='eraser'){stroke();ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(p.x,p.y);ctx.stroke();lastX=p.x;lastY=p.y;}
+      });
+      document.addEventListener('mouseup',()=>drawing=false);
+
+      function stroke(){
+        ctx.strokeStyle=tool==='eraser'?'#fff':color;
+        ctx.fillStyle=tool==='eraser'?'#fff':color;
+        ctx.lineWidth=tool==='brush'?6:tool==='eraser'?12:2;
+        ctx.lineCap='round';ctx.lineJoin='round';
+      }
+      function dot(x,y){stroke();ctx.beginPath();ctx.arc(x,y,ctx.lineWidth/2,0,7);ctx.fill();}
+      function floodFill(x,y,fill){
+        const img=ctx.getImageData(0,0,canvas.width,canvas.height);const d=img.data;
+        const W=canvas.width;const idx=(x,y)=>(y*W+x)*4;
+        const t=idx(x,y);const tc=[d[t],d[t+1],d[t+2],d[t+3]];
+        const fc=hexRGB(fill);
+        if(tc[0]===fc[0]&&tc[1]===fc[1]&&tc[2]===fc[2])return;
+        const stack=[[x,y]];
+        while(stack.length){
+          const [cx,cy]=stack.pop();
+          if(cx<0||cy<0||cx>=W||cy>=canvas.height)continue;
+          const i=idx(cx,cy);
+          if(d[i]===tc[0]&&d[i+1]===tc[1]&&d[i+2]===tc[2]&&d[i+3]===tc[3]){
+            d[i]=fc[0];d[i+1]=fc[1];d[i+2]=fc[2];d[i+3]=255;
+            stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+          }
+        }
+        ctx.putImageData(img,0,0);
+      }
+      function hexRGB(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+    }
+  });
+};
+
+/* ---------- Explorer / My Computer ---------- */
+Apps.explorer = function() {
+  makeWindow({
+    title: 'My Computer', icon: '🖥️', w: 420, h: 300,
+    build(win) {
+      win.body.innerHTML = `
+        <div class="menubar outset" style="border:none;box-shadow:none;">
+          <span class="menu-item">File</span><span class="menu-item">Edit</span>
+          <span class="menu-item">View</span><span class="menu-item">Help</span>
+        </div>
+        <div class="explorer">
+          <div class="icon-grid inset"></div>
+        </div>
+        <div class="statusbar">
+          <span class="panel inset">5 object(s)</span>
+          <span class="panel inset" style="flex:0 0 90px;">My Computer</span>
+        </div>`;
+      const grid = win.body.querySelector('.icon-grid');
+      const items = [
+        {ico:'💾',label:'3½ Floppy (A:)'},
+        {ico:'🖴',label:'(C:)'},
+        {ico:'💿',label:'(D:)'},
+        {ico:'🖨️',label:'Printers'},
+        {ico:'🎛️',label:'Control Panel'},
+      ];
+      items.forEach(it=>{
+        const fi=document.createElement('div');
+        fi.className='file-icon';
+        fi.innerHTML=`<span class="fi-ico">${it.ico}</span><span class="fi-label">${it.label}</span>`;
+        fi.addEventListener('click',()=>{grid.querySelectorAll('.file-icon').forEach(x=>x.classList.remove('selected'));fi.classList.add('selected');});
+        fi.addEventListener('dblclick',()=>dialog('My Computer','📁','This drive is empty or not accessible.\n(This is a demo filesystem.)'));
+        grid.appendChild(fi);
+      });
+    }
+  });
+};
+
+/* ---------- Help ---------- */
+Apps.help = function() {
+  makeWindow({
+    title: 'Help', icon: '❓', w: 400, h: 320,
+    build(win){
+      win.body.innerHTML = `<div class="help-content inset">
+        <h2>Windows 95 Help</h2>
+        <p>Welcome to the HTML recreation of Windows 95. Here's how to get around:</p>
+        <ul>
+          <li><b>Start menu</b> — click <code>Start</code> for programs.</li>
+          <li><b>Desktop icons</b> — double-click to open.</li>
+          <li><b>Windows</b> — drag the title bar to move, drag the bottom-right corner to resize.</li>
+          <li><b>Minimize / Maximize / Close</b> — use the buttons in each title bar.</li>
+          <li><b>Taskbar</b> — click a button to switch or minimize a window.</li>
+        </ul>
+        <p><b>Included programs:</b> Notepad, Paint, Minesweeper, Calculator, Clock, My Computer.</p>
+        <p>Right-click cells in Minesweeper to place flags. Have fun!</p>
+      </div>`;
+    }
+  });
+};
+
+/* ---------- Run dialog ---------- */
+Apps.run = function() {
+  makeWindow({
+    title: 'Run', icon: '🏃', w: 340, h: 150,
+    build(win){
+      win.body.innerHTML = `
+        <div style="padding:12px;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="font-size:30px;">🏃</span>
+            <span style="line-height:1.4;">Type the name of a program, and Windows will open it for you.</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span>Open:</span>
+            <input class="inset" id="run-input" style="flex:1;padding:3px;font-family:inherit;" autocomplete="off">
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;">
+            <button class="btn95" id="run-ok">OK</button>
+            <button class="btn95" id="run-cancel">Cancel</button>
+          </div>
+        </div>`;
+      const inp = win.body.querySelector('#run-input');
+      inp.focus();
+      const go = () => {
+        const v = inp.value.trim().toLowerCase().replace(/\.exe$/,'');
+        const map = {notepad:'notepad',paint:'paint',mspaint:'paint',calc:'calc',clock:'clock',
+                     minesweeper:'minesweeper',winmine:'minesweeper',explorer:'explorer'};
+        if (map[v]) { Apps[map[v]](); closeWindow(win); }
+        else dialog('Run','⚠️',`Cannot find '${inp.value}'. Make sure you typed the name correctly.\n\nTry: notepad, paint, calc, clock, winmine, explorer`);
+      };
+      win.body.querySelector('#run-ok').addEventListener('click',go);
+      win.body.querySelector('#run-cancel').addEventListener('click',()=>closeWindow(win));
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+    }
+  });
+};
+
+Apps.settings = function(){ Apps.explorer(); };
+Apps.find = function(){ dialog('Find','🔍','Find: All Files\n\nSearch is not available in this demo.'); };
+
+/* ---------- Shutdown ---------- */
+Apps.shutdown = function() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:200000;display:flex;align-items:center;justify-content:center;';
+  const box = document.createElement('div');
+  box.className='window outset';
+  box.style.width='320px';
+  box.innerHTML=`
+    <div class="titlebar"><span class="tb-ico">🔌</span><span class="tb-title">Shut Down Windows</span></div>
+    <div style="padding:16px;display:flex;gap:14px;">
+      <span style="font-size:40px;">🔌</span>
+      <div>
+        <p style="margin-bottom:10px;font-weight:bold;">Are you sure you want to shut down the computer?</p>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label><input type="radio" name="sd" checked> Shut down</label>
+          <label><input type="radio" name="sd"> Restart</label>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-btns">
+      <button class="btn95" id="sd-yes">Yes</button>
+      <button class="btn95" id="sd-no">No</button>
+    </div>`;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  box.querySelector('#sd-no').addEventListener('click',()=>overlay.remove());
+  box.querySelector('#sd-yes').addEventListener('click',()=>{
+    const mode = box.querySelector('input[name=sd]:checked').parentElement.textContent.trim();
+    overlay.remove();
+    if (mode==='Restart'){ doShutdownScreen(true); }
+    else doShutdownScreen(false);
+  });
+};
+
+function doShutdownScreen(restart){
+  const s=document.createElement('div');
+  s.style.cssText='position:absolute;inset:0;background:#000;z-index:300000;display:flex;align-items:center;justify-content:center;color:#fa3;font-size:22px;text-align:center;font-family:sans-serif;';
+  s.innerHTML = restart
+    ? 'Restarting...'
+    : `<div>It's now safe to turn off<br>your computer.<br><br><span style="font-size:13px;color:#888;cursor:pointer;text-decoration:underline;" id="reboot">(click to restart)</span></div>`;
+  document.body.appendChild(s);
+  if(restart){ setTimeout(()=>location.reload(),1200); }
+  else { s.querySelector('#reboot').addEventListener('click',()=>location.reload()); }
+}
+
+/* ---------- Generic dialog ---------- */
+function dialog(title, icon, msg) {
+  makeWindow({
+    title, icon, w: 320, h: 150, x: 200, y: 150,
+    build(win){
+      win.el.style.height='auto';
+      win.body.innerHTML=`
+        <div class="dialog-body"><span class="d-ico">${icon}</span><span style="white-space:pre-wrap;line-height:1.4;align-self:center;">${msg}</span></div>
+        <div class="dialog-btns"><button class="btn95">OK</button></div>`;
+      win.body.querySelector('button').addEventListener('click',()=>closeWindow(win));
+      win.el.querySelector('.resizer').style.display='none';
+    }
+  });
+}
+function showAbout(){ dialog('About','ℹ️','Windows 95\nHTML Edition\n\nA single-file recreation.\nBuilt with HTML, CSS & JavaScript.'); }
+
+/* ============================================================
+   Desktop Icons
+   ============================================================ */
+const desktopIcons = [
+  {ico:'🖥️', label:'My Computer', action:()=>Apps.explorer()},
+  {ico:'📁', label:'My Documents', action:()=>Apps.explorer()},
+  {ico:'🗑️', label:'Recycle Bin', action:()=>dialog('Recycle Bin','🗑️','The Recycle Bin is empty.')},
+  {ico:'📝', label:'Notepad', action:()=>Apps.notepad('', 'Untitled')},
+  {ico:'🎨', label:'Paint', action:()=>Apps.paint()},
+  {ico:'💣', label:'Minesweeper', action:()=>Apps.minesweeper()},
+  {ico:'🧮', label:'Calculator', action:()=>Apps.calc()},
+  {ico:'🌐', label:'Internet', action:()=>dialog('The Internet','🌐','Dialing up...\n\nNo modem detected. The Internet will have to wait.')},
+];
+
+function layoutIcons(){
+  desktop.querySelectorAll('.desktop-icon').forEach(e=>e.remove());
+  desktopIcons.forEach((it,i)=>{
+    const el=document.createElement('div');
+    el.className='desktop-icon';
+    el.style.left='10px';
+    el.style.top=(10 + i*78)+'px';
+    el.innerHTML=`<span class="ico">${it.ico}</span><br><span class="label">${it.label}</span>`;
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      desktop.querySelectorAll('.desktop-icon').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+    el.addEventListener('dblclick',it.action);
+    makeIconDraggable(el);
+    desktop.appendChild(el);
+  });
+}
+function makeIconDraggable(el){
+  let sx,sy,ox,oy,moving=false,moved=false;
+  el.addEventListener('mousedown',e=>{
+    moving=true;moved=false;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop;
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!moving)return;
+    if(Math.abs(e.clientX-sx)>3||Math.abs(e.clientY-sy)>3)moved=true;
+    el.style.left=(ox+e.clientX-sx)+'px';
+    el.style.top=Math.max(0,oy+e.clientY-sy)+'px';
+  });
+  document.addEventListener('mouseup',()=>moving=false);
+}
+
+/* ============================================================
+   Start menu logic
+   ============================================================ */
+const startBtn = document.getElementById('start-btn');
+const startMenu = document.getElementById('start-menu');
+let menuOpen = false;
+
+function openStart(){ menuOpen=true; startMenu.classList.add('open'); startBtn.classList.add('active'); }
+function closeStart(){ menuOpen=false; startMenu.classList.remove('open'); startBtn.classList.remove('active'); closeSubs(); }
+function closeSubs(){ document.querySelectorAll('.submenu').forEach(s=>s.classList.remove('open')); }
+
+startBtn.addEventListener('click',e=>{ e.stopPropagation(); menuOpen?closeStart():openStart(); });
+
+document.querySelectorAll('#start-list .start-entry').forEach(en=>{
+  en.addEventListener('mouseenter',()=>{
+    closeSubs();
+    const sub=en.dataset.sub;
+    if(sub){
+      const m=document.getElementById('sub-'+sub);
+      const r=en.getBoundingClientRect();
+      m.style.left=(startMenu.offsetLeft+startMenu.offsetWidth)+'px';
+      m.style.bottom=(window.innerHeight - r.bottom)+'px';
+      m.classList.add('open');
+    }
+  });
+  en.addEventListener('click',()=>{
+    const app=en.dataset.app;
+    if(app){
+      if(Apps[app])Apps[app]();
+      closeStart();
+    }
+  });
+});
+
+document.querySelectorAll('.submenu .start-entry').forEach(en=>{
+  en.addEventListener('click',()=>{
+    if(en.dataset.app && Apps[en.dataset.app]) Apps[en.dataset.app]();
+    if(en.dataset.doc){
+      const d=en.dataset.doc;
+      Apps.notepad(FS[d], d==='readme'?'Readme.txt':'Todo.txt');
+    }
+    closeStart();
+  });
+});
+
+// keep submenu open when hovering it
+document.querySelectorAll('.submenu').forEach(m=>{
+  m.addEventListener('mouseenter',()=>m.classList.add('open'));
+});
+
+document.addEventListener('click',e=>{
+  if(menuOpen && !e.target.closest('#start-menu') && !e.target.closest('#start-btn') && !e.target.closest('.submenu'))
+    closeStart();
+  // deselect desktop icons when clicking empty desktop
+  if(e.target===desktop) desktop.querySelectorAll('.desktop-icon').forEach(x=>x.classList.remove('selected'));
+});
+
+/* ============================================================
+   Rubber-band selection on desktop
+   ============================================================ */
+const selBox = document.getElementById('select-box');
+(function(){
+  let sx,sy,active=false;
+  desktop.addEventListener('mousedown',e=>{
+    if(e.target!==desktop)return;
+    active=true;sx=e.clientX;sy=e.clientY;
+    selBox.style.display='block';
+    selBox.style.left=sx+'px';selBox.style.top=sy+'px';selBox.style.width='0';selBox.style.height='0';
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!active)return;
+    const x=Math.min(e.clientX,sx),y=Math.min(e.clientY,sy);
+    selBox.style.left=x+'px';selBox.style.top=y+'px';
+    selBox.style.width=Math.abs(e.clientX-sx)+'px';selBox.style.height=Math.abs(e.clientY-sy)+'px';
+  });
+  document.addEventListener('mouseup',()=>{active=false;selBox.style.display='none';});
+})();
+
+/* ============================================================
+   Clock in tray
+   ============================================================ */
+function updateClock(){
+  const now=new Date();
+  let h=now.getHours();const m=String(now.getMinutes()).padStart(2,'0');
+  const ap=h>=12?'PM':'AM';h=h%12||12;
+  document.getElementById('clock').textContent=`${h}:${m} ${ap}`;
+}
+updateClock();
+setInterval(updateClock,1000);
+
+document.getElementById('clock').addEventListener('dblclick',()=>Apps.clock());
+document.getElementById('tray-vol').addEventListener('click',()=>dialog('Volume','🔊','Volume control is not available in this demo.'));
+
+/* ============================================================
+   Boot
+   ============================================================ */
+layoutIcons();
+
+// Welcome window
+window.addEventListener('load',()=>{
+  setTimeout(()=>Apps.notepad(FS.readme,'Readme.txt'),300);
+});
+
+// Prevent context menu on the whole desktop (except where we handle it)
+document.addEventListener('contextmenu',e=>{
+  if(!e.target.closest('.ms-cell') && !e.target.closest('textarea') && !e.target.closest('input')) e.preventDefault();
+});
+</script>
+</body>
+</html>

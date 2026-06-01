@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows 98</title>
+  <style>
+    @font-face {
+      font-family: 'W98';
+      src: local('MS Sans Serif'), local('Tahoma'), local('Arial');
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: 'W98', Tahoma, 'MS Sans Serif', sans-serif;
+      font-size: 11px;
+      overflow: hidden;
+      background: #000;
+      cursor: default;
+    }
+
+    /* ── Boot Screen ── */
+    #boot-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #fff;
+    }
+    #boot-screen .logo {
+      font-size: 48px; font-weight: bold; letter-spacing: -2px;
+      margin-bottom: 60px;
+    }
+    #boot-screen .logo span { color: #ff0000; }
+    #boot-screen .progress-wrap {
+      width: 300px; height: 18px;
+      border: 2px solid #888; background: #000;
+      position: relative;
+    }
+    #boot-screen .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #0000aa, #0000ff);
+      transition: width 0.1s linear;
+    }
+    #boot-screen .boot-text {
+      margin-top: 12px; font-size: 11px; color: #ccc;
+    }
+
+    /* ── Desktop ── */
+    #desktop {
+      position: fixed; inset: 0; bottom: 28px;
+      background: #008080 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="2" height="2" fill="%23007070"/><rect x="2" y="2" width="2" height="2" fill="%23007070"/></svg>') repeat;
+      display: none;
+    }
+    #desktop.visible { display: block; }
+
+    .desktop-icon {
+      position: absolute;
+      width: 72px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; padding: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .desktop-icon img { width: 32px; height: 32px; image-rendering: pixelated; }
+    .desktop-icon span {
+      color: #fff; font-size: 11px;
+      text-shadow: 1px 1px 1px #000, -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000;
+      word-break: break-word; line-height: 1.2;
+    }
+    .desktop-icon.selected {
+      background: rgba(0, 0, 128, 0.5);
+      outline: 1px dotted #fff;
+    }
+    .desktop-icon.demo-click {
+      animation: iconPulse 0.4s ease;
+    }
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.92); background: rgba(0,0,128,0.7); }
+    }
+
+    /* ── Taskbar ── */
+    #taskbar {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 28px;
+      background: #c0c0c0;
+      border-top: 2px solid #fff;
+      display: none; align-items: center; z-index: 9000;
+      box-shadow: inset 0 1px 0 #dfdfdf;
+    }
+    #taskbar.visible { display: flex; }
+
+    #start-btn {
+      height: 22px; margin: 2px 2px 2px 4px; padding: 0 6px 0 4px;
+      background: #c0c0c0; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 11px;
+      box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #808080, 1px 1px 0 #000;
+    }
+    #start-btn:active, #start-btn.active {
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff;
+    }
+    #start-btn .start-logo {
+      width: 16px; height: 16px;
+      background: linear-gradient(135deg, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #ffff00 75%);
+    }
+
+    #task-buttons { flex: 1; display: flex; gap: 2px; overflow: hidden; padding: 0 2px; }
+    .task-btn {
+      height: 22px; max-width: 160px; min-width: 24px;
+      padding: 0 6px; background: #c0c0c0; border: none; cursor: pointer;
+      font-size: 11px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+      box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #808080, 1px 1px 0 #000;
+    }
+    .task-btn.active {
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff, 1px 1px 0 #000;
+      font-weight: bold;
+    }
+
+    #tray {
+      height: 22px; margin: 2px 4px 2px 0; padding: 0 8px;
+      border: 1px inset #808080; background: #c0c0c0;
+      display: flex; align-items: center; gap: 6px; font-size: 11px;
+    }
+    .tray-icon { font-size: 14px; cursor: pointer; }
+
+    /* ── Start Menu ── */
+    #start-menu {
+      position: fixed; bottom: 28px; left: 0; width: 200px;
+      background: #c0c0c0; display: none; z-index: 9500;
+      box-shadow: 2px 2px 0 #000, inset 1px 1px 0 #fff, inset -1px -1px 0 #808080;
+    }
+    #start-menu.visible { display: flex; }
+    #start-menu-sidebar {
+      width: 24px; background: #808080;
+      display: flex; align-items: flex-end; padding-bottom: 8px; justify-content: center;
+    }
+    #start-menu-sidebar span {
+      writing-mode: vertical-rl; transform: rotate(180deg);
+      color: #c0c0c0; font-weight: bold; font-size: 18px; letter-spacing: 2px;
+    }
+    #start-menu-items { flex: 1; padding: 2px 0; }
+    .start-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 12px; cursor: pointer; font-size: 11px;
+    }
+    .start-item:hover { background: #000080; color: #fff; }
+    .start-item img { width: 24px; height: 24px; image-rendering: pixelated; }
+    .start-divider { height: 2px; margin: 2px 4px; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+
+    /* ── Windows ── */
+    .win {
+      position: absolute; background: #c0c0c0;
+      box-shadow: 2px 2px 0 #000, inset 1px 1px 0 #fff, inset -1px -1px 0 #808080;
+      min-width: 200px; min-height: 120px;
+      display: flex; flex-direction: column;
+    }
+    .win.maximized { inset: 0 !important; bottom: 28px !important; width: auto !important; height: auto !important; }
+    .win-titlebar {
+      height: 18px; background: linear-gradient(90deg, #000080, #1084d0);
+      display: flex; align-items: center; padding: 0 2px; cursor: move;
+      color: #fff; font-weight: bold; font-size: 11px;
+    }
+    .win.inactive .win-titlebar { background: linear-gradient(90deg, #808080, #b0b0b0); color: #c0c0c0; }
+    .win-titlebar .win-icon { width: 16px; height: 16px; margin-right: 4px; image-rendering: pixelated; }
+    .win-titlebar .win-title { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .win-titlebar .win-controls { display: flex; gap: 2px; }
+    .win-ctrl {
+      width: 16px; height: 14px; background: #c0c0c0; border: none; cursor: pointer;
+      font-size: 9px; font-weight: bold; line-height: 1;
+      box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #808080;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .win-ctrl:active { box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff; }
+    .win-menubar {
+      display: flex; gap: 0; padding: 2px 0; border-bottom: 1px solid #808080;
+    }
+    .win-menu-item { padding: 2px 8px; cursor: pointer; }
+    .win-menu-item:hover { background: #000080; color: #fff; }
+    .win-body { flex: 1; overflow: auto; position: relative; }
+    .win-statusbar {
+      height: 18px; border-top: 1px solid #808080;
+      display: flex; align-items: center; padding: 0 4px; font-size: 11px;
+    }
+    .win-statusbar .status-section {
+      border: 1px inset #808080; padding: 0 4px; flex: 1; height: 16px;
+      display: flex; align-items: center;
+    }
+
+    /* ── App: My Computer ── */
+    .my-computer-body { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px; background: #fff; }
+    .folder-icon {
+      width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer; text-align: center; font-size: 11px;
+    }
+    .folder-icon:hover { background: #000080; color: #fff; }
+    .folder-icon .fi-img { font-size: 32px; }
+
+    /* ── App: Notepad ── */
+    .notepad-body textarea {
+      width: 100%; height: 100%; border: none; resize: none;
+      font-family: 'Courier New', monospace; font-size: 12px;
+      padding: 4px; outline: none; background: #fff;
+    }
+
+    /* ── App: Calculator ── */
+    .calc-body { padding: 4px; background: #c0c0c0; }
+    .calc-display {
+      width: 100%; height: 24px; background: #fff; border: 2px inset #808080;
+      text-align: right; padding: 2px 4px; font-size: 14px; font-family: 'Courier New', monospace;
+      margin-bottom: 4px; overflow: hidden;
+    }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .calc-btn {
+      height: 24px; background: #c0c0c0; border: none; cursor: pointer; font-size: 11px;
+      box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #808080;
+    }
+    .calc-btn:active { box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff; }
+    .calc-btn.wide { grid-column: span 2; }
+
+    /* ── App: Paint ── */
+    .paint-body { display: flex; flex-direction: column; background: #c0c0c0; height: 100%; }
+    .paint-toolbar { display: flex; gap: 2px; padding: 2px; border-bottom: 1px solid #808080; flex-wrap: wrap; }
+    .paint-tool {
+      width: 24px; height: 24px; background: #c0c0c0; border: 1px outset #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .paint-tool.active { border: 1px inset #808080; background: #a0a0a0; }
+    .paint-colors { display: flex; gap: 1px; padding: 2px; }
+    .paint-color { width: 16px; height: 16px; cursor: pointer; border: 1px solid #000; }
+    .paint-color.active { outline: 2px solid #000; outline-offset: 1px; }
+    #paint-canvas { flex: 1; background: #fff; cursor: crosshair; display: block; }
+
+    /* ── App: Minesweeper ── */
+    .mine-body { padding: 4px; background: #c0c0c0; }
+    .mine-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border: 2px inset #808080; padding: 2px 4px; margin-bottom: 4px; background: #c0c0c0;
+    }
+    .mine-counter {
+      background: #000; color: #ff0000; font-family: 'Courier New', monospace;
+      font-size: 20px; padding: 0 4px; letter-spacing: 2px; min-width: 42px; text-align: center;
+    }
+    .mine-face {
+      width: 26px; height: 26px; font-size: 20px; cursor: pointer;
+      background: #c0c0c0; border: 2px outset #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mine-face:active { border: 2px inset #808080; }
+    .mine-grid { display: grid; border: 3px inset #808080; }
+    .mine-cell {
+      width: 16px; height: 16px; background: #c0c0c0;
+      border: 2px outset #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: bold;
+    }
+    .mine-cell.revealed { border: 1px solid #808080; background: #c0c0c0; cursor: default; }
+    .mine-cell.mine { background: #ff0000; }
+    .mine-cell.c1 { color: #0000ff; } .mine-cell.c2 { color: #008000; }
+    .mine-cell.c3 { color: #ff0000; } .mine-cell.c4 { color: #000080; }
+    .mine-cell.c5 { color: #800000; } .mine-cell.c6 { color: #008080; }
+    .mine-cell.c7 { color: #000; } .mine-cell.c8 { color: #808080; }
+
+    /* ── App: Recycle Bin ── */
+    .recycle-body { padding: 16px; background: #fff; text-align: center; color: #808080; }
+    .recycle-body img { width: 64px; margin-bottom: 12px; image-rendering: pixelated; }
+
+    /* ── App: Internet Explorer ── */
+    .ie-toolbar {
+      display: flex; gap: 2px; padding: 2px 4px; background: #c0c0c0;
+      border-bottom: 1px solid #808080; align-items: center;
+    }
+    .ie-btn {
+      padding: 2px 8px; background: #c0c0c0; border: none; cursor: pointer; font-size: 11px;
+      box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #808080;
+    }
+    .ie-address {
+      flex: 1; height: 20px; border: 2px inset #808080; padding: 0 4px; font-size: 11px;
+    }
+    .ie-content { background: #fff; padding: 16px; height: 100%; overflow: auto; }
+    .ie-content h1 { color: #000080; font-size: 18px; margin-bottom: 8px; }
+    .ie-content p { margin-bottom: 8px; line-height: 1.5; }
+    .ie-content a { color: #0000ff; text-decoration: underline; cursor: pointer; }
+    .ie-content .ie-logo { font-size: 48px; text-align: center; margin: 20px 0; }
+
+    /* ── Demo overlay ── */
+    #demo-banner {
+      position: fixed; top: 8px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,128,0.85); color: #fff; padding: 4px 16px;
+      font-size: 11px; z-index: 10000; display: none; border: 1px solid #fff;
+    }
+    #demo-banner.visible { display: block; }
+
+    /* ── Shutdown overlay ── */
+    #shutdown-screen {
+      position: fixed; inset: 0; z-index: 9999; background: #000;
+      display: none; align-items: center; justify-content: center;
+      color: #808080; font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Boot Screen -->
+<div id="boot-screen">
+  <div class="logo">Microsoft<span>®</span> Windows<span>98</span></div>
+  <div class="progress-wrap"><div class="progress-bar" id="boot-progress"></div></div>
+  <div class="boot-text" id="boot-text">Starting Windows 98...</div>
+</div>
+
+<!-- Desktop -->
+<div id="desktop">
+  <div class="desktop-icon" data-app="my-computer" style="top:16px;left:16px;">
+    <img src="assets/icon-my-computer.png" alt="">
+    <span>My Computer</span>
+  </div>
+  <div class="desktop-icon" data-app="recycle-bin" style="top:16px;left:100px;">
+    <img src="assets/icon-recycle-bin.png" alt="">
+    <span>Recycle Bin</span>
+  </div>
+  <div class="desktop-icon" data-app="notepad" style="top:100px;left:16px;">
+    <img src="assets/icon-notepad.png" alt="">
+    <span>Notepad</span>
+  </div>
+  <div class="desktop-icon" data-app="calculator" style="top:100px;left:100px;">
+    <img src="assets/icon-calculator.png" alt="">
+    <span>Calculator</span>
+  </div>
+  <div class="desktop-icon" data-app="paint" style="top:184px;left:16px;">
+    <img src="assets/icon-paint.png" alt="">
+    <span>Paint</span>
+  </div>
+  <div class="desktop-icon" data-app="minesweeper" style="top:184px;left:100px;">
+    <img src="assets/icon-minesweeper.png" alt="">
+    <span>Minesweeper</span>
+  </div>
+  <div class="desktop-icon" data-app="internet" style="top:268px;left:16px;">
+    <img src="assets/icon-internet.png" alt="">
+    <span>Internet Explorer</span>
+  </div>
+</div>
+
+<!-- Taskbar -->
+<div id="taskbar">
+  <button id="start-btn"><div class="start-logo"></div>Start</button>
+  <div id="task-buttons"></div>
+  <div id="tray">
+    <span class="tray-icon" title="Volume">🔊</span>
+    <span id="clock">12:00 PM</span>
+  </div>
+</div>
+
+<!-- Start Menu -->
+<div id="start-menu">
+  <div id="start-menu-sidebar"><span>Windows 98</span></div>
+  <div id="start-menu-items">
+    <div class="start-item" data-app="internet"><img src="assets/icon-internet.png" alt="">Internet Explorer</div>
+    <div class="start-item" data-app="notepad"><img src="assets/icon-notepad.png" alt="">Notepad</div>
+    <div class="start-item" data-app="calculator"><img src="assets/icon-calculator.png" alt="">Calculator</div>
+    <div class="start-item" data-app="paint"><img src="assets/icon-paint.png" alt="">Paint</div>
+    <div class="start-item" data-app="minesweeper"><img src="assets/icon-minesweeper.png" alt="">Minesweeper</div>
+    <div class="start-divider"></div>
+    <div class="start-item" data-app="my-computer"><img src="assets/icon-my-computer.png" alt="">My Computer</div>
+    <div class="start-divider"></div>
+    <div class="start-item" id="shutdown-btn">Shut Down...</div>
+  </div>
+</div>
+
+<div id="demo-banner">Auto-showcase: opening applications...</div>
+<div id="shutdown-screen"><p>It is now safe to turn off your computer.</p></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  AUDIO ENGINE (Web Audio API)
+// ═══════════════════════════════════════════
+const Audio = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+  function resume() { getCtx().resume(); }
+
+  function tone(freq, dur, type = 'square', vol = 0.15, delay = 0) {
+    const c = getCtx(), t = c.currentTime + delay;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + dur);
+  }
+
+  function noise(dur, vol = 0.08) {
+    const c = getCtx(), t = c.currentTime;
+    const buf = c.createBuffer(1, c.sampleRate * dur, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(), g = c.createGain();
+    src.buffer = buf; g.gain.value = vol;
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    src.connect(g); g.connect(c.destination);
+    src.start(t);
+  }
+
+  return {
+    resume,
+    startup() {
+      // Classic Win98 startup jingle approximation
+      const notes = [523,659,784,1047,784,1047,1319];
+      notes.forEach((f, i) => tone(f, 0.25, 'sine', 0.12, i * 0.18));
+      setTimeout(() => tone(1047, 0.6, 'sine', 0.1), notes.length * 0.18);
+    },
+    click() { tone(800, 0.03, 'square', 0.08); },
+    open() { tone(600, 0.05, 'sine', 0.1); tone(900, 0.08, 'sine', 0.08, 0.04); },
+    close() { tone(400, 0.06, 'sine', 0.1); },
+    error() { tone(200, 0.15, 'square', 0.12); tone(150, 0.2, 'square', 0.1, 0.1); },
+    notify() { tone(880, 0.1, 'sine', 0.08); tone(1100, 0.15, 'sine', 0.08, 0.08); },
+    shutdown() {
+      tone(440, 0.3, 'sine', 0.1);
+      setTimeout(() => tone(330, 0.4, 'sine', 0.08), 0.3);
+      setTimeout(() => tone(220, 0.6, 'sine', 0.06), 0.6);
+    }
+  };
+})();
+
+// ═══════════════════════════════════════════
+//  WINDOW MANAGER
+// ═══════════════════════════════════════════
+const WM = {
+  windows: [],
+  zIndex: 100,
+  activeId: null,
+
+  create(id, title, icon, content, opts = {}) {
+    if (this.windows.find(w => w.id === id)) {
+      this.focus(id);
+      return;
+    }
+    const w = document.createElement('div');
+    w.className = 'win';
+    w.id = 'win-' + id;
+    w.style.width = (opts.width || 400) + 'px';
+    w.style.height = (opts.height || 300) + 'px';
+    w.style.left = (opts.x || 80 + this.windows.length * 30) + 'px';
+    w.style.top = (opts.y || 40 + this.windows.length * 30) + 'px';
+    w.style.zIndex = ++this.zIndex;
+
+    w.innerHTML = `
+      <div class="win-titlebar">
+        <img class="win-icon" src="${icon}" alt="">
+        <span class="win-title">${title}</span>
+        <div class="win-controls">
+          <button class="win-ctrl" data-action="min">_</button>
+          <button class="win-ctrl" data-action="max">□</button>
+          <button class="win-ctrl" data-action="close">×</button>
+        </div>
+      </div>
+      ${opts.menubar ? '<div class="win-menubar">' + opts.menubar + '</div>' : ''}
+      <div class="win-body">${content}</div>
+      ${opts.statusbar ? '<div class="win-statusbar">' + opts.statusbar + '</div>' : ''}
+    `;
+
+    document.getElementById('desktop').appendChild(w);
+    this.windows.push({ id, el: w, title, icon, minimized: false });
+    this.focus(id);
+    this.setupDrag(w);
+    this.setupControls(w, id);
+    this.updateTaskbar();
+    Audio.open();
+    if (opts.onOpen) opts.onOpen(w);
+    return w;
+  },
+
+  focus(id) {
+    this.windows.forEach(w => {
+      w.el.classList.toggle('inactive', w.id !== id);
+      if (w.id === id) w.el.style.zIndex = ++this.zIndex;
+    });
+    this.activeId = id;
+    this.updateTaskbar();
+  },
+
+  close(id) {
+    const idx = this.windows.findIndex(w => w.id === id);
+    if (idx === -1) return;
+    this.windows[idx].el.remove();
+    this.windows.splice(idx, 1);
+    Audio.close();
+    this.updateTaskbar();
+    if (this.windows.length) this.focus(this.windows[this.windows.length - 1].id);
+  },
+
+  minimize(id) {
+    const w = this.windows.find(w => w.id === id);
+    if (!w) return;
+    w.minimized = true;
+    w.el.style.display = 'none';
+    this.updateTaskbar();
+  },
+
+  restore(id) {
+    const w = this.windows.find(w => w.id === id);
+    if (!w) return;
+    w.minimized = false;
+    w.el.style.display = 'flex';
+    this.focus(id);
+  },
+
+  toggleMax(id) {
+    const w = this.windows.find(w => w.id === id);
+    if (!w) return;
+    w.el.classList.toggle('maximized');
+  },
+
+  setupDrag(el) {
+    const bar = el.querySelector('.win-titlebar');
+    let ox, oy, dragging = false;
+    bar.addEventListener('mousedown', e => {
+      if (e.target.classList.contains('win-ctrl')) return;
+      dragging = true;
+      ox = e.clientX - el.offsetLeft;
+      oy = e.clientY - el.offsetTop;
+      el.classList.remove('maximized');
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      el.style.left = (e.clientX - ox) + 'px';
+      el.style.top = (e.clientY - oy) + 'px';
+    });
+    document.addEventListener('mouseup', () => dragging = false);
+    bar.addEventListener('dblclick', () => {
+      const id = el.id.replace('win-', '');
+      this.toggleMax(id);
+    });
+  },
+
+  setupControls(el, id) {
+    el.querySelector('.win-titlebar').addEventListener('mousedown', () => this.focus(id));
+    el.querySelectorAll('.win-ctrl').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        Audio.click();
+        const a = btn.dataset.action;
+        if (a === 'close') this.close(id);
+        else if (a === 'min') this.minimize(id);
+        else if (a === 'max') this.toggleMax(id);
+      });
+    });
+  },
+
+  updateTaskbar() {
+    const tb = document.getElementById('task-buttons');
+    tb.innerHTML = '';
+    this.windows.forEach(w => {
+      const btn = document.createElement('button');
+      btn.className = 'task-btn' + (w.id === this.activeId && !w.minimized ? ' active' : '');
+      btn.innerHTML = `<img src="${w.icon}" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;image-rendering:pixelated"> ${w.title}`;
+      btn.addEventListener('click', () => {
+        Audio.click();
+        if (w.minimized || w.id !== this.activeId) this.restore(w.id);
+        else this.minimize(w.id);
+      });
+      tb.appendChild(btn);
+    });
+  }
+};
+
+// ═══════════════════════════════════════════
+//  APPLICATIONS
+// ═══════════════════════════════════════════
+const Apps = {
+  'my-computer': {
+    title: 'My Computer',
+    icon: 'assets/icon-my-computer.png',
+    width: 420, height: 280,
+    menubar: '<span class="win-menu-item">File</span><span class="win-menu-item">Edit</span><span class="win-menu-item">View</span><span class="win-menu-item">Help</span>',
+    content: `<div class="my-computer-body">
+      <div class="folder-icon"><div class="fi-img">💾</div><span>3½ Floppy (A:)</span></div>
+      <div class="folder-icon"><div class="fi-img">💿</div><span>(C:)</span></div>
+      <div class="folder-icon"><div class="fi-img">💿</div><span>(D:)</span></div>
+      <div class="folder-icon"><div class="fi-img">🖨️</div><span>Printers</span></div>
+      <div class="folder-icon"><div class="fi-img">🎛️</div><span>Control Panel</span></div>
+      <div class="folder-icon"><div class="fi-img">📁</div><span>Dial-Up Networking</span></div>
+    </div>`,
+    statusbar: '<div class="status-section">6 object(s)</div>'
+  },
+
+  'recycle-bin': {
+    title: 'Recycle Bin',
+    icon: 'assets/icon-recycle-bin.png',
+    width: 360, height: 240,
+    content: `<div class="recycle-body">
+      <img src="assets/icon-recycle-bin.png" alt="">
+      <p>The Recycle Bin is empty.</p>
+    </div>`
+  },
+
+  'notepad': {
+    title: 'Untitled - Notepad',
+    icon: 'assets/icon-notepad.png',
+    width: 450, height: 320,
+    menubar: '<span class="win-menu-item">File</span><span class="win-menu-item">Edit</span><span class="win-menu-item">Search</span><span class="win-menu-item">Help</span>',
+    content: `<div class="notepad-body" style="height:100%"><textarea>Welcome to Windows 98 Notepad!
+
+This is a nostalgic trip back to 1998.
+Double-click icons on the desktop to open applications.
+
+Try editing this text...</textarea></div>`
+  },
+
+  'calculator': {
+    title: 'Calculator',
+    icon: 'assets/icon-calculator.png',
+    width: 220, height: 280,
+    content: `<div class="calc-body">
+      <div class="calc-display" id="calc-display">0</div>
+      <div class="calc-grid">
+        <button class="calc-btn" data-c="MC">MC</button>
+        <button class="calc-btn" data-c="MR">MR</button>
+        <button class="calc-btn" data-c="MS">MS</button>
+        <button class="calc-btn" data-c="M+">M+</button>
+        <button class="calc-btn" data-c="Back">Back</button>
+        <button class="calc-btn" data-c="CE">CE</button>
+        <button class="calc-btn" data-c="C">C</button>
+        <button class="calc-btn" data-c="/">/</button>
+        <button class="calc-btn" data-c="7">7</button>
+        <button class="calc-btn" data-c="8">8</button>
+        <button class="calc-btn" data-c="9">9</button>
+        <button class="calc-btn" data-c="*">*</button>
+        <button class="calc-btn" data-c="4">4</button>
+        <button class="calc-btn" data-c="5">5</button>
+        <button class="calc-btn" data-c="6">6</button>
+        <button class="calc-btn" data-c="-">-</button>
+        <button class="calc-btn" data-c="1">1</button>
+        <button class="calc-btn" data-c="2">2</button>
+        <button class="calc-btn" data-c="3">3</button>
+        <button class="calc-btn" data-c="+">+</button>
+        <button class="calc-btn" data-c="0">0</button>
+        <button class="calc-btn" data-c="±">±</button>
+        <button class="calc-btn" data-c=".">.</button>
+        <button class="calc-btn" data-c="=">=</button>
+      </div>
+    </div>`,
+    onOpen(w) { initCalculator(w); }
+  },
+
+  'paint': {
+    title: 'untitled - Paint',
+    icon: 'assets/icon-paint.png',
+    width: 520, height: 400,
+    menubar: '<span class="win-menu-item">File</span><span class="win-menu-item">Edit</span><span class="win-menu-item">View</span><span class="win-menu-item">Image</span><span class="win-menu-item">Colors</span><span class="win-menu-item">Help</span>',
+    content: `<div class="paint-body">
+      <div class="paint-toolbar">
+        <div class="paint-tool active" data-tool="pen" title="Pencil">✏️</div>
+        <div class="paint-tool" data-tool="brush" title="Brush">🖌️</div>
+        <div class="paint-tool" data-tool="eraser" title="Eraser">⬜</div>
+        <div class="paint-tool" data-tool="fill" title="Fill">🪣</div>
+        <div class="paint-tool" data-tool="text" title="Text">A</div>
+        <div class="paint-tool" data-tool="line" title="Line">╱</div>
+        <div class="paint-tool" data-tool="rect" title="Rectangle">▭</div>
+        <div class="paint-tool" data-tool="ellipse" title="Ellipse">⬭</div>
+      </div>
+      <div class="paint-colors" id="paint-colors"></div>
+      <canvas id="paint-canvas"></canvas>
+    </div>`,
+    onOpen(w) { initPaint(w); }
+  },
+
+  'minesweeper': {
+    title: 'Minesweeper',
+    icon: 'assets/icon-minesweeper.png',
+    width: 200, height: 280,
+    content: `<div class="mine-body">
+      <div class="mine-header">
+        <div class="mine-counter" id="mine-flags">010</div>
+        <div class="mine-face" id="mine-face">😊</div>
+        <div class="mine-counter" id="mine-time">000</div>
+      </div>
+      <div class="mine-grid" id="mine-grid"></div>
+    </div>`,
+    onOpen(w) { initMinesweeper(w); }
+  },
+
+  'internet': {
+    title: 'Microsoft Internet Explorer',
+    icon: 'assets/icon-internet.png',
+    width: 560, height: 420,
+    menubar: '<span class="win-menu-item">File</span><span class="win-menu-item">Edit</span><span class="win-menu-item">View</span><span class="win-menu-item">Go</span><span class="win-menu-item">Favorites</span><span class="win-menu-item">Help</span>',
+    content: `<div style="display:flex;flex-direction:column;height:100%">
+      <div class="ie-toolbar">
+        <button class="ie-btn">Back</button>
+        <button class="ie-btn">Forward</button>
+        <button class="ie-btn">Stop</button>
+        <button class="ie-btn">Refresh</button>
+        <button class="ie-btn">Home</button>
+        <span style="font-size:11px;margin-left:4px">Address</span>
+        <input class="ie-address" value="http://www.microsoft.com/windows98/" readonly>
+        <button class="ie-btn">Links</button>
+      </div>
+      <div class="ie-content">
+        <div class="ie-logo">🌐</div>
+        <h1>Welcome to the Internet!</h1>
+        <p>You've reached the World Wide Web — a global information space where documents and other web resources are identified by URLs.</p>
+        <p><b>Popular Sites:</b></p>
+        <p><a>Yahoo! — http://www.yahoo.com</a></p>
+        <p><a>Altavista — http://www.altavista.com</a></p>
+        <p><a>Netscape — http://www.netscape.com</a></p>
+        <p><a>Microsoft — http://www.microsoft.com</a></p>
+        <hr style="margin:16px 0;border:none;border-top:1px solid #ccc">
+        <p style="font-size:10px;color:#808080">Internet Explorer 4.0 · Best viewed at 800×600 · 28.8k modem recommended</p>
+      </div>
+    </div>`,
+    statusbar: '<div class="status-section">Done</div><div class="status-section" style="flex:0;width:120px">Internet</div>'
+  }
+};
+
+function openApp(appId) {
+  const app = Apps[appId];
+  if (!app) return;
+  WM.create(appId, app.title, app.icon, app.content, {
+    width: app.width, height: app.height,
+    menubar: app.menubar, statusbar: app.statusbar,
+    onOpen: app.onOpen
+  });
+}
+
+// ── Calculator Logic ──
+function initCalculator(win) {
+  let display = '0', prev = null, op = null, fresh = true;
+  const disp = win.querySelector('#calc-display');
+  win.querySelectorAll('.calc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      Audio.click();
+      const c = btn.dataset.c;
+      if ('0123456789'.includes(c)) {
+        display = fresh ? c : (display === '0' ? c : display + c);
+        fresh = false;
+      } else if (c === 'C') { display = '0'; prev = null; op = null; fresh = true; }
+      else if (c === 'CE') { display = '0'; fresh = true; }
+      else if (c === 'Back') { display = display.length > 1 ? display.slice(0, -1) : '0'; }
+      else if (c === '±') { display = String(-parseFloat(display)); }
+      else if (c === '.') { if (!display.includes('.')) display += '.'; fresh = false; }
+      else if ('+-*/'.includes(c)) { prev = parseFloat(display); op = c; fresh = true; }
+      else if (c === '=') {
+        if (prev !== null && op) {
+          const cur = parseFloat(display);
+          display = String(op === '+' ? prev + cur : op === '-' ? prev - cur : op === '*' ? prev * cur : prev / cur);
+          prev = null; op = null; fresh = true;
+        }
+      }
+      disp.textContent = display.length > 12 ? parseFloat(display).toExponential(4) : display;
+    });
+  });
+}
+
+// ── Paint Logic ──
+function initPaint(win) {
+  const canvas = win.querySelector('#paint-canvas');
+  const colorsEl = win.querySelector('#paint-colors');
+  const colors = ['#000','#808080','#800000','#808000','#008000','#008080','#000080','#808080',
+                  '#fff','#c0c0c0','#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff'];
+  let color = '#000', drawing = false, tool = 'pen';
+
+  colors.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'paint-color' + (c === color ? ' active' : '');
+    el.style.background = c;
+    el.addEventListener('click', () => {
+      color = c;
+      colorsEl.querySelectorAll('.paint-color').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      Audio.click();
+    });
+    colorsEl.appendChild(el);
+  });
+
+  win.querySelectorAll('.paint-tool').forEach(t => {
+    t.addEventListener('click', () => {
+      tool = t.dataset.tool;
+      win.querySelectorAll('.paint-tool').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      Audio.click();
+    });
+  });
+
+  function resize() {
+    const body = win.querySelector('.paint-body');
+    canvas.width = body.clientWidth;
+    canvas.height = body.clientHeight - 60;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Draw a sample smiley
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 60, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(canvas.width/2 - 20, canvas.height/2 - 15, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(canvas.width/2 + 20, canvas.height/2 - 15, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2 + 10, 30, 0.1, Math.PI - 0.1); ctx.stroke();
+  }
+  resize();
+
+  const ctx = canvas.getContext('2d');
+  canvas.addEventListener('mousedown', e => { drawing = true; draw(e); });
+  canvas.addEventListener('mousemove', e => { if (drawing) draw(e); });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+
+  function draw(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    ctx.fillStyle = tool === 'eraser' ? '#fff' : color;
+    ctx.beginPath();
+    ctx.arc(x, y, tool === 'brush' ? 6 : 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// ── Minesweeper Logic ──
+function initMinesweeper(win) {
+  const ROWS = 9, COLS = 9, MINES = 10;
+  const grid = win.querySelector('#mine-grid');
+  const face = win.querySelector('#mine-face');
+  const flagsEl = win.querySelector('#mine-flags');
+  const timeEl = win.querySelector('#mine-time');
+  grid.style.gridTemplateColumns = `repeat(${COLS}, 16px)`;
+
+  let board, revealed, flagged, gameOver, timer, seconds = 0;
+
+  function newGame() {
+    board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    revealed = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+    flagged = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+    gameOver = false; seconds = 0;
+    clearInterval(timer);
+    timeEl.textContent = '000';
+    face.textContent = '😊';
+    flagsEl.textContent = String(MINES).padStart(3, '0');
+
+    let placed = 0;
+    while (placed < MINES) {
+      const r = Math.floor(Math.random() * ROWS), c = Math.floor(Math.random() * COLS);
+      if (board[r][c] !== -1) { board[r][c] = -1; placed++; }
+    }
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++)
+        if (board[r][c] !== -1) {
+          let n = 0;
+          for (let dr = -1; dr <= 1; dr++)
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr, nc = c + dc;
+              if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && board[nr][nc] === -1) n++;
+            }
+          board[r][c] = n;
+        }
+    render();
+  }
+
+  function render() {
+    grid.innerHTML = '';
+    let flagCount = 0;
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'mine-cell';
+        if (revealed[r][c]) {
+          cell.classList.add('revealed');
+          if (board[r][c] === -1) { cell.classList.add('mine'); cell.textContent = '💣'; }
+          else if (board[r][c] > 0) { cell.classList.add('c' + board[r][c]); cell.textContent = board[r][c]; }
+        } else if (flagged[r][c]) { cell.textContent = '🚩'; flagCount++; }
+        cell.addEventListener('click', () => clickCell(r, c));
+        cell.addEventListener('contextmenu', e => { e.preventDefault(); flagCell(r, c); });
+        grid.appendChild(cell);
+      }
+    flagsEl.textContent = String(Math.max(0, MINES - flagCount)).padStart(3, '0');
+  }
+
+  function clickCell(r, c) {
+    if (gameOver || flagged[r][c] || revealed[r][c]) return;
+    if (!timer) timer = setInterval(() => { seconds++; timeEl.textContent = String(Math.min(999, seconds)).padStart(3, '0'); }, 1000);
+    revealed[r][c] = true;
+    Audio.click();
+    if (board[r][c] === -1) {
+      gameOver = true; face.textContent = '😵'; Audio.error();
+      for (let i = 0; i < ROWS; i++) for (let j = 0; j < COLS; j++) revealed[i][j] = true;
+    } else if (board[r][c] === 0) flood(r, c);
+    render();
+    checkWin();
+  }
+
+  function flood(r, c) {
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !revealed[nr][nc] && !flagged[nr][nc]) {
+          revealed[nr][nc] = true;
+          if (board[nr][nc] === 0) flood(nr, nc);
+        }
+      }
+  }
+
+  function flagCell(r, c) {
+    if (gameOver || revealed[r][c]) return;
+    flagged[r][c] = !flagged[r][c];
+    Audio.notify();
+    render();
+  }
+
+  function checkWin() {
+    let win = true;
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++)
+        if (board[r][c] !== -1 && !revealed[r][c]) win = false;
+    if (win) { gameOver = true; face.textContent = '😎'; Audio.startup(); clearInterval(timer); }
+  }
+
+  face.addEventListener('click', () => { Audio.click(); newGame(); });
+  newGame();
+}
+
+// ═══════════════════════════════════════════
+//  UI INTERACTIONS
+// ═══════════════════════════════════════════
+document.querySelectorAll('.desktop-icon').forEach(icon => {
+  icon.addEventListener('click', e => {
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+    icon.classList.add('selected');
+  });
+  icon.addEventListener('dblclick', () => {
+    Audio.click();
+    openApp(icon.dataset.app);
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  Audio.click();
+  const menu = document.getElementById('start-menu');
+  const btn = document.getElementById('start-btn');
+  menu.classList.toggle('visible');
+  btn.classList.toggle('active');
+});
+
+document.querySelectorAll('.start-item[data-app]').forEach(item => {
+  item.addEventListener('click', () => {
+    Audio.click();
+    openApp(item.dataset.app);
+    document.getElementById('start-menu').classList.remove('visible');
+    document.getElementById('start-btn').classList.remove('active');
+  });
+});
+
+document.getElementById('shutdown-btn').addEventListener('click', () => {
+  Audio.shutdown();
+  document.getElementById('start-menu').classList.remove('visible');
+  document.getElementById('desktop').style.display = 'none';
+  document.getElementById('taskbar').classList.remove('visible');
+  document.getElementById('shutdown-screen').style.display = 'flex';
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+    document.getElementById('start-menu').classList.remove('visible');
+    document.getElementById('start-btn').classList.remove('active');
+  }
+});
+
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clock').textContent = `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════════
+//  BOOT SEQUENCE
+// ═══════════════════════════════════════════
+async function boot() {
+  const progress = document.getElementById('boot-progress');
+  const bootText = document.getElementById('boot-text');
+  const messages = [
+    'Starting Windows 98...',
+    'HIMEM.SYS...',
+    'Loading network support...',
+    'Starting Windows...'
+  ];
+
+  for (let i = 0; i <= 100; i++) {
+    progress.style.width = i + '%';
+    if (i === 20) bootText.textContent = messages[1];
+    if (i === 50) bootText.textContent = messages[2];
+    if (i === 80) bootText.textContent = messages[3];
+    await sleep(30);
+  }
+
+  await sleep(400);
+  document.getElementById('boot-screen').style.display = 'none';
+  document.getElementById('desktop').classList.add('visible');
+  document.getElementById('taskbar').classList.add('visible');
+  Audio.resume();
+  Audio.startup();
+
+  // Start auto-showcase after OS loads
+  setTimeout(runDemo, 2000);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════════════════════════════════════════
+//  AUTO-SHOWCASE DEMO
+// ═══════════════════════════════════════════
+const DEMO_APPS = ['my-computer', 'recycle-bin', 'notepad', 'calculator', 'paint', 'minesweeper', 'internet'];
+
+async function runDemo() {
+  const banner = document.getElementById('demo-banner');
+  banner.classList.add('visible');
+
+  for (let i = 0; i < DEMO_APPS.length; i++) {
+    const appId = DEMO_APPS[i];
+    const icon = document.querySelector(`.desktop-icon[data-app="${appId}"]`);
+    const appName = Apps[appId].title;
+
+    banner.textContent = `Opening: ${appName} (${i + 1}/${DEMO_APPS.length})`;
+
+    // Simulate click on desktop icon
+    document.querySelectorAll('.desktop-icon').forEach(ic => ic.classList.remove('selected'));
+    icon.classList.add('selected', 'demo-click');
+    Audio.click();
+    await sleep(300);
+    icon.classList.remove('demo-click');
+
+    // Open the application
+    openApp(appId);
+
+    // Stagger window positions for showcase
+    const win = document.getElementById('win-' + appId);
+    if (win) {
+      win.style.left = (60 + i * 25) + 'px';
+      win.style.top = (30 + i * 20) + 'px';
+    }
+
+    await sleep(2000);
+  }
+
+  banner.textContent = 'Showcase complete — double-click icons to explore!';
+  setTimeout(() => banner.classList.remove('visible'), 4000);
+}
+
+// Start boot on load; resume audio on first interaction too
+document.addEventListener('click', () => Audio.resume(), { once: true });
+window.addEventListener('load', boot);
+</script>
+</body>
+</html>

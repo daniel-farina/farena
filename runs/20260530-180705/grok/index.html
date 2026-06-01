@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Windows 98</title>
+<style>
+  :root {
+    --win-gray: #c0c0c0;
+    --win-dark: #808080;
+    --win-light: #dfdfdf;
+    --title-active: #000080;
+    --title-inactive: #808080;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: "MS Sans Serif", "Tahoma", "Segoe UI", sans-serif; font-size: 11px; color: #000; cursor: default; background: #008080; }
+  .desktop {
+    position: fixed; inset: 0; 
+    background: url('assets/wallpaper.png') center center / cover no-repeat;
+    image-rendering: pixelated;
+  }
+  .desktop-icons { position: absolute; inset: 0; }
+  .desktop-icon {
+    position: absolute; width: 76px; text-align: center; padding: 4px 2px;
+    user-select: none; border: 1px solid transparent; border-radius: 2px;
+  }
+  .desktop-icon.selected { background: rgba(0,0,128,0.25); border-color: #000080; }
+  .desktop-icon img { width: 32px; height: 32px; image-rendering: pixelated; display: block; margin: 0 auto 2px; }
+  .desktop-icon .label { color: #fff; text-shadow: 1px 1px 1px #000, -1px -1px 1px #000; font-size: 10px; line-height: 1.1; padding: 0 2px; }
+  
+  .taskbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 28px;
+    background: linear-gradient(#dfdfdf 0%, #c0c0c0 40%, #a0a0a0 100%);
+    border-top: 2px solid #fff; border-bottom: 1px solid #000;
+    display: flex; align-items: center; padding: 1px 2px; z-index: 99999; box-shadow: 0 -1px 0 #808080;
+  }
+  .start-btn {
+    height: 22px; padding: 1px 6px 1px 4px; margin-right: 4px;
+    background: linear-gradient(#fff 0%, #c0c0c0 50%, #808080 100%);
+    border: 2px outset #fff; font-weight: bold; font-size: 11px; display: flex; align-items: center; gap: 4px;
+    box-shadow: 1px 1px 0 #000; cursor: pointer;
+  }
+  .start-btn:active { border-style: inset; background: #a0a0a0; }
+  .start-flag { width: 16px; height: 14px; image-rendering: pixelated; }
+  .taskbar-tasks { flex: 1; display: flex; gap: 2px; height: 20px; overflow-x: auto; padding: 0 4px; }
+  .taskbar-btn {
+    min-width: 120px; max-width: 160px; height: 20px; padding: 0 6px;
+    background: #c0c0c0; border: 2px outset #fff; font-size: 10px;
+    display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .taskbar-btn.active { background: #dfdfdf; border-style: inset; }
+  .taskbar-right { display: flex; align-items: center; gap: 6px; padding: 0 8px; height: 22px; border-left: 2px inset #fff; font-size: 10px; }
+  .clock { background: #c0c0c0; border: 1px inset #808080; padding: 1px 6px; min-width: 52px; text-align: center; }
+
+  .window {
+    position: absolute; min-width: 240px; min-height: 120px;
+    background: #c0c0c0; border: 2px outset #fff; box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; overflow: hidden; z-index: 100;
+  }
+  .window.inactive .titlebar { background: #808080; }
+  .titlebar {
+    height: 18px; background: #000080; color: #fff; display: flex; align-items: center;
+    padding: 0 2px; flex-shrink: 0; user-select: none; font-weight: normal;
+  }
+  .titlebar .icon { width: 16px; height: 14px; margin-right: 3px; image-rendering: pixelated; }
+  .titlebar .title { flex: 1; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 1px; }
+  .titlebar .controls { display: flex; gap: 1px; }
+  .titlebar .win-btn {
+    width: 15px; height: 13px; border: 1px outset #fff; background: #c0c0c0; color: #000;
+    font: 9px/10px "MS Sans Serif", monospace; text-align: center; line-height: 11px; cursor: pointer;
+  }
+  .titlebar .win-btn:active { border-style: inset; }
+  .titlebar .close-btn { width: 15px; font-weight: bold; }
+
+  .menubar { height: 18px; background: #c0c0c0; border-bottom: 1px solid #808080; display: flex; padding: 0 2px; flex-shrink: 0; font-size: 11px; }
+  .menubar .menu-item { padding: 1px 6px; cursor: pointer; }
+  .menubar .menu-item:hover { background: #000080; color: #fff; }
+
+  .window-content { flex: 1; overflow: auto; background: #c0c0c0; position: relative; }
+  .window-content.white { background: #fff; }
+  .window-content.inset { border: 2px inset #fff; margin: 4px; background: #fff; }
+  .statusbar { height: 18px; background: #c0c0c0; border-top: 1px solid #808080; display: flex; font-size: 10px; padding: 1px 4px; flex-shrink: 0; }
+
+  .start-menu {
+    position: fixed; bottom: 28px; left: 2px; width: 240px; background: #c0c0c0;
+    border: 2px outset #fff; box-shadow: 3px 3px 5px rgba(0,0,0,0.6); z-index: 100000; display: none;
+  }
+  .start-menu.open { display: block; }
+  .start-menu-header { background: #000080; color: #fff; padding: 3px 8px; font-weight: bold; font-size: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .start-menu-header::before { content: "🪟"; font-size: 14px; }
+  .start-menu-item { padding: 4px 8px 4px 28px; position: relative; cursor: pointer; border-bottom: 1px solid #808080; display: flex; align-items: center; gap: 8px; }
+  .start-menu-item:hover { background: #000080; color: #fff; }
+  .start-menu-item.sub::after { content: "▶"; position: absolute; right: 6px; font-size: 9px; }
+  .start-menu-item img { width: 18px; height: 18px; image-rendering: pixelated; }
+  .start-menu-sep { height: 4px; background: linear-gradient(#808080 50%, #fff 50%); margin: 2px 0; }
+  .submenu {
+    position: absolute; left: 100%; top: -2px; width: 180px; background: #c0c0c0;
+    border: 2px outset #fff; display: none; z-index: 100001;
+  }
+  .start-menu-item:hover > .submenu { display: block; }
+
+  .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 8px; }
+  .icon-item { text-align: center; font-size: 10px; cursor: pointer; }
+  .icon-item img { width: 32px; height: 32px; image-rendering: pixelated; display: block; margin: 0 auto 2px; }
+  .icon-item:hover { background: rgba(0,0,128,0.15); }
+
+  .retro-input { border: 2px inset #fff; background: #fff; padding: 2px 4px; font-family: monospace; }
+  .retro-btn { border: 2px outset #fff; background: #c0c0c0; padding: 2px 10px; cursor: pointer; font-size: 11px; }
+  .retro-btn:active { border-style: inset; }
+
+  .paint-toolbar { display: flex; gap: 4px; padding: 3px; background: #c0c0c0; border-bottom: 1px solid #808080; flex-wrap: wrap; }
+  .color-swatch { width: 18px; height: 16px; border: 1px solid #000; cursor: pointer; }
+  .paint-canvas { border: 2px inset #fff; background: #fff; cursor: crosshair; display: block; margin: 4px auto; image-rendering: pixelated; }
+
+  .calc-display { font: 18px/1 "Courier New", monospace; background: #c0c0c0; border: 2px inset #fff; padding: 4px 6px; text-align: right; margin: 4px; }
+  .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 4px; }
+  .calc-btn { border: 2px outset #fff; background: #c0c0c0; padding: 6px 0; font-size: 12px; cursor: pointer; text-align: center; }
+  .calc-btn:active { border-style: inset; background: #a0a0a0; }
+
+  .dos-screen { background: #000; color: #c0c0c0; font: 12px/14px "Courier New", monospace; padding: 6px; white-space: pre; overflow-y: auto; height: 100%; }
+  .dos-input-line { display: flex; }
+  .dos-prompt { color: #c0c0c0; }
+
+  .mines-grid { display: grid; gap: 1px; background: #808080; padding: 2px; margin: 4px auto; }
+  .mine-cell { width: 18px; height: 18px; background: #c0c0c0; border: 2px outset #fff; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+  .mine-cell.revealed { border: 1px solid #808080; background: #c0c0c0; }
+  .mine-cell.mine { background: #f00; }
+  .mine-cell.flagged::after { content: "🚩"; font-size: 12px; }
+  .ms-smiley { font-size: 20px; cursor: pointer; padding: 0 6px; }
+
+  .card { position: absolute; width: 36px; height: 50px; background: #fff; border: 1px solid #000; border-radius: 3px; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: 1px 1px 2px #000; cursor: grab; user-select: none; }
+  .card.red { color: #c00; }
+  .card.black { color: #000; }
+  .card.back { background: linear-gradient(#003 0%, #006 100%); color: #fff; font-size: 10px; }
+
+  .ie-toolbar { display: flex; gap: 2px; padding: 2px; background: #c0c0c0; border-bottom: 1px solid #808080; }
+  .ie-btn { border: 2px outset #fff; background: #c0c0c0; padding: 1px 4px; font-size: 10px; cursor: pointer; }
+  .ie-address { flex: 1; display: flex; align-items: center; gap: 4px; margin-left: 4px; }
+  .ie-content { padding: 8px; background: #fff; height: 100%; overflow: auto; font-size: 12px; line-height: 1.3; }
+  .ie-content a { color: #00f; text-decoration: underline; cursor: pointer; }
+
+  .crt::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0px, rgba(0,0,0,0.04) 1px, transparent 2px); pointer-events: none; z-index: 2; }
+</style>
+</head>
+<body>
+<div id="boot-screen" style="position:fixed;inset:0;background:#000;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#c0c0c0;font-family:monospace;">
+  <div style="text-align:center;">
+    <img src="assets/boot_logo.png" style="max-width:92%;image-rendering:pixelated;border:4px solid #404040;" alt="Windows 98">
+    <div style="margin-top:12px;font-size:13px;letter-spacing:2px;">Starting Windows 98...</div>
+    <div style="margin-top:8px;width:280px;height:14px;border:2px solid #404040;background:#000;">
+      <div id="boot-progress" style="height:100%;width:0%;background:#c0c0c0;transition:width 2.2s linear;"></div>
+    </div>
+    <div style="margin-top:6px;font-size:9px;opacity:0.7;">Microsoft (R) Windows 98 Second Edition</div>
+  </div>
+</div>
+
+<div id="desktop" class="desktop" style="display:none;">
+  <div class="desktop-icons" id="desktop-icons"></div>
+</div>
+
+<div id="taskbar" class="taskbar" style="display:none;">
+  <div class="start-btn" id="start-btn">
+    <span style="color:#c00;font-size:13px;font-weight:900;">🪟</span>
+    <span style="font-weight:bold;">Start</span>
+  </div>
+  <div class="taskbar-tasks" id="taskbar-tasks"></div>
+  <div class="taskbar-right">
+    <div style="font-size:9px;">🔊</div>
+    <div id="clock" class="clock">12:00 PM</div>
+  </div>
+</div>
+
+<div id="start-menu" class="start-menu">
+  <div class="start-menu-header">Windows 98</div>
+  <div class="start-menu-item" data-action="mycomputer"><img src="assets/icon_my_computer.png">My Computer</div>
+  <div class="start-menu-item sub" data-action="programs">Programs
+    <div class="submenu">
+      <div class="start-menu-item" data-action="notepad"><img src="assets/icon_notepad.png">Notepad</div>
+      <div class="start-menu-item" data-action="paint"><img src="assets/icon_paint.png">Paint</div>
+      <div class="start-menu-item" data-action="calc"><img src="assets/icon_calc.png">Calculator</div>
+      <div class="start-menu-item" data-action="dos"><img src="assets/icon_dos.png">MS-DOS Prompt</div>
+      <div class="start-menu-item sub" data-action="games">Games
+        <div class="submenu">
+          <div class="start-menu-item" data-action="solitaire"><img src="assets/icon_solitaire.png">Solitaire</div>
+          <div class="start-menu-item" data-action="minesweeper"><img src="assets/icon_minesweeper.png">Minesweeper</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="start-menu-item" data-action="ie"><img src="assets/icon_ie.png">Internet Explorer</div>
+  <div class="start-menu-item" data-action="control"><img src="assets/icon_control.png">Control Panel</div>
+  <div class="start-menu-sep"></div>
+  <div class="start-menu-item" data-action="shutdown">Shut Down...</div>
+</div>
+
+<div id="shutdown-screen" style="position:fixed;inset:0;background:#000;z-index:9999999;display:none;align-items:center;justify-content:center;color:#c0c0c0;font-family:monospace;text-align:center;">
+  <div>
+    <div style="font-size:28px;margin-bottom:20px;">It is now safe to turn off<br>your computer.</div>
+    <div style="font-size:11px;opacity:0.6;">(Click anywhere or press any key to restart)</div>
+  </div>
+</div>
+
+<script>
+// ============== SOUND SYSTEM (Web Audio) ==============
+let audioCtx;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+function playTone(freq, dur, type = 'square', vol = 0.25, sweep = null) {
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  osc.type = type;
+  osc.frequency.value = freq;
+  if (sweep) {
+    osc.frequency.setValueAtTime(freq, t0);
+    osc.frequency.linearRampToValueAtTime(sweep, t0 + dur);
+  }
+  gain.gain.value = vol;
+  gain.gain.setValueAtTime(vol, t0);
+  gain.gain.linearRampToValueAtTime(0.0001, t0 + dur);
+  filter.type = 'lowpass'; filter.frequency.value = 2400;
+  osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.05);
+}
+function playClick() { playTone(1400, 0.035, 'square', 0.18); }
+function playOpen() { playTone(520, 0.18, 'sawtooth', 0.16); setTimeout(() => playTone(760, 0.12, 'sawtooth', 0.12), 60); }
+function playMin() { playTone(880, 0.06, 'square', 0.15); }
+function playError() { playTone(330, 0.7, 'sine', 0.35); setTimeout(() => playTone(220, 0.4, 'sine', 0.3), 180); }
+function playStartup() {
+  if (!audioCtx) return;
+  const seq = [[392,0.12],[523,0.1],[659,0.1],[784,0.18],[1046,0.28],[880,0.08],[988,0.22]];
+  seq.forEach(([f,d],i) => setTimeout(() => playTone(f, d, 'sawtooth', 0.22), i * 95));
+  setTimeout(() => playTone(1318, 0.6, 'sine', 0.15), 620);
+}
+function playBeep(freq=880, dur=0.08) { playTone(freq, dur, 'square', 0.2); }
+
+// ============== WINDOW MANAGER ==============
+let zIndex = 100;
+let openWindows = [];
+let taskbarBtns = {};
+
+function createWindow(title, iconSrc, contentHTML, w = 320, h = 240, x = 120, y = 80, appId = '') {
+  initAudio();
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.style.width = w + 'px';
+  win.style.height = h + 'px';
+  win.style.left = x + 'px';
+  win.style.top = y + 'px';
+  win.style.zIndex = ++zIndex;
+  win.dataset.appId = appId;
+
+  const iconHTML = iconSrc ? `<img class="icon" src="${iconSrc}" alt="">` : '';
+  win.innerHTML = `
+    <div class="titlebar">
+      ${iconHTML}
+      <div class="title">${title}</div>
+      <div class="controls">
+        <div class="win-btn min-btn" title="Minimize">_</div>
+        <div class="win-btn max-btn" title="Maximize">□</div>
+        <div class="win-btn close-btn" title="Close">×</div>
+      </div>
+    </div>
+    ${contentHTML}
+  `;
+
+  document.getElementById('desktop').appendChild(win);
+  openWindows.push(win);
+
+  // Bring to front on any interaction
+  win.addEventListener('mousedown', () => bringToFront(win));
+
+  // Drag via titlebar
+  const titlebar = win.querySelector('.titlebar');
+  let dragging = false, offX = 0, offY = 0;
+  titlebar.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.win-btn')) return;
+    bringToFront(win);
+    dragging = true;
+    offX = e.clientX - win.offsetLeft;
+    offY = e.clientY - win.offsetTop;
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    let nx = e.clientX - offX;
+    let ny = e.clientY - offY;
+    nx = Math.max(0, Math.min(window.innerWidth - 80, nx));
+    ny = Math.max(0, Math.min(window.innerHeight - 60, ny));
+    win.style.left = nx + 'px';
+    win.style.top = ny + 'px';
+  });
+  document.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; });
+
+  // Title double-click maximize
+  titlebar.addEventListener('dblclick', () => toggleMaximize(win));
+
+  // Buttons
+  win.querySelector('.close-btn').onclick = () => closeWindow(win);
+  win.querySelector('.min-btn').onclick = () => minimizeWindow(win);
+  win.querySelector('.max-btn').onclick = () => toggleMaximize(win);
+
+  // Taskbar button
+  addTaskbarButton(win, title, iconSrc, appId);
+
+  bringToFront(win);
+  playOpen();
+  return win;
+}
+
+function bringToFront(win) {
+  win.style.zIndex = ++zIndex;
+  // deactivate others
+  document.querySelectorAll('.window').forEach(w => w.classList.toggle('inactive', w !== win));
+  // sync taskbar
+  document.querySelectorAll('.taskbar-btn').forEach(b => b.classList.toggle('active', b.dataset.winId === win.id));
+}
+
+function closeWindow(win) {
+  playClick();
+  const id = win.id;
+  win.remove();
+  openWindows = openWindows.filter(w => w !== win);
+  removeTaskbarButton(id);
+}
+
+function minimizeWindow(win) {
+  playMin();
+  win.style.display = 'none';
+  const btn = document.querySelector(`.taskbar-btn[data-win-id="${win.id}"]`);
+  if (btn) btn.classList.remove('active');
+}
+
+function toggleMaximize(win) {
+  playClick();
+  if (win.dataset.maximized === '1') {
+    win.style.left = win.dataset.prevLeft;
+    win.style.top = win.dataset.prevTop;
+    win.style.width = win.dataset.prevW;
+    win.style.height = win.dataset.prevH;
+    win.dataset.maximized = '0';
+  } else {
+    win.dataset.prevLeft = win.style.left;
+    win.dataset.prevTop = win.style.top;
+    win.dataset.prevW = win.style.width;
+    win.dataset.prevH = win.style.height;
+    win.style.left = '2px';
+    win.style.top = '2px';
+    win.style.width = (window.innerWidth - 6) + 'px';
+    win.style.height = (window.innerHeight - 32) + 'px';
+    win.dataset.maximized = '1';
+  }
+}
+
+function addTaskbarButton(win, title, iconSrc, appId) {
+  const container = document.getElementById('taskbar-tasks');
+  const btn = document.createElement('div');
+  btn.className = 'taskbar-btn active';
+  btn.dataset.winId = 'win-' + Date.now();
+  win.id = btn.dataset.winId;
+  btn.innerHTML = `${iconSrc ? `<img src="${iconSrc}" style="width:14px;height:14px;image-rendering:pixelated">` : ''} <span>${title}</span>`;
+  btn.onclick = () => {
+    if (win.style.display === 'none') {
+      win.style.display = '';
+      bringToFront(win);
+    } else if (win.style.zIndex < zIndex - 2) {
+      bringToFront(win);
+    } else {
+      minimizeWindow(win);
+    }
+  };
+  container.appendChild(btn);
+  taskbarBtns[win.id] = btn;
+}
+
+function removeTaskbarButton(winId) {
+  const btn = taskbarBtns[winId];
+  if (btn) { btn.remove(); delete taskbarBtns[winId]; }
+}
+
+// ============== DESKTOP ICONS ==============
+const desktopIcons = [
+  { id: 'mycomputer', label: 'My Computer', icon: 'assets/icon_my_computer.png', x: 24, y: 20 },
+  { id: 'recycle', label: 'Recycle Bin', icon: 'assets/icon_recycle_empty.png', x: 24, y: 110 },
+  { id: 'notepad', label: 'Notepad', icon: 'assets/icon_notepad.png', x: 24, y: 200 },
+  { id: 'paint', label: 'Paint', icon: 'assets/icon_paint.png', x: 24, y: 290 },
+  { id: 'calc', label: 'Calculator', icon: 'assets/icon_calc.png', x: 110, y: 20 },
+  { id: 'minesweeper', label: 'Minesweeper', icon: 'assets/icon_minesweeper.png', x: 110, y: 110 },
+  { id: 'solitaire', label: 'Solitaire', icon: 'assets/icon_solitaire.png', x: 110, y: 200 },
+  { id: 'ie', label: 'Internet Explorer', icon: 'assets/icon_ie.png', x: 110, y: 290 },
+  { id: 'dos', label: 'MS-DOS Prompt', icon: 'assets/icon_dos.png', x: 24, y: 380 },
+  { id: 'control', label: 'Control Panel', icon: 'assets/icon_control.png', x: 110, y: 380 },
+];
+
+function initDesktopIcons() {
+  const container = document.getElementById('desktop-icons');
+  container.innerHTML = '';
+  desktopIcons.forEach((ic, idx) => {
+    const el = document.createElement('div');
+    el.className = 'desktop-icon';
+    el.style.left = ic.x + 'px';
+    el.style.top = ic.y + 'px';
+    el.dataset.app = ic.id;
+    el.innerHTML = `<img src="${ic.icon}" alt=""><div class="label">${ic.label}</div>`;
+    el.onclick = (e) => {
+      document.querySelectorAll('.desktop-icon').forEach(d => d.classList.remove('selected'));
+      el.classList.add('selected');
+      setTimeout(() => el.classList.remove('selected'), 900);
+      playClick();
+    };
+    el.ondblclick = () => { playClick(); openApp(ic.id); };
+    // single click also opens for demo friendliness
+    el.onmousedown = (e) => { if (e.button === 0) setTimeout(() => { if (!el.classList.contains('selected')) openApp(ic.id); }, 220); };
+    container.appendChild(el);
+  });
+}
+
+// ============== APP LAUNCHERS ==============
+function openApp(id) {
+  initAudio();
+  const existing = document.querySelector(`.window[data-app-id="${id}"]`);
+  if (existing) { bringToFront(existing); return; }
+
+  let win;
+  switch (id) {
+    case 'mycomputer': win = openMyComputer(); break;
+    case 'recycle': win = openRecycleBin(); break;
+    case 'notepad': win = openNotepad(); break;
+    case 'paint': win = openPaint(); break;
+    case 'calc': win = openCalculator(); break;
+    case 'minesweeper': win = openMinesweeper(); break;
+    case 'solitaire': win = openSolitaire(); break;
+    case 'ie': win = openIE(); break;
+    case 'dos': win = openDOS(); break;
+    case 'control': win = openControlPanel(); break;
+    default: win = openGeneric(id);
+  }
+  if (win) win.dataset.appId = id;
+  return win;
+}
+
+function openGeneric(name) {
+  return createWindow(name, null, `<div class="window-content inset" style="padding:12px;">This is the ${name} window.<br><br>(Demo placeholder)</div>`, 260, 160);
+}
+
+function openMyComputer() {
+  const content = `
+    <div class="menubar"><div class="menu-item">File</div><div class="menu-item">Edit</div><div class="menu-item">View</div><div class="menu-item">Help</div></div>
+    <div class="window-content" style="padding:6px;font-size:10px;">
+      <div style="margin-bottom:6px;color:#000080;">My Computer</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="icon-item" onclick="openApp('dos')"><img src="assets/icon_dos.png"><div>C:</div></div>
+        <div class="icon-item" onclick="openApp('dos')"><img src="assets/icon_folder.png"><div>Windows</div></div>
+        <div class="icon-item" onclick="openApp('dos')"><img src="assets/icon_folder.png"><div>Program Files</div></div>
+        <div class="icon-item"><img src="assets/icon_folder.png"><div>My Documents</div></div>
+        <div class="icon-item"><img src="assets/icon_control.png"><div>Control Panel</div></div>
+      </div>
+      <div style="margin-top:10px;border-top:1px solid #808080;padding-top:4px;font-size:9px;">Free space on C: 1.24 GB of 2.10 GB</div>
+    </div>`;
+  return createWindow('My Computer', 'assets/icon_my_computer.png', content, 380, 220, 140, 70, 'mycomputer');
+}
+
+function openRecycleBin() {
+  const isFull = Math.random() > 0.6;
+  const icon = isFull ? 'assets/icon_recycle_full.png' : 'assets/icon_recycle_empty.png';
+  const content = `
+    <div class="window-content white" style="padding:8px;">
+      <div style="margin-bottom:8px;">${isFull ? 'The Recycle Bin contains 3 items (42 KB).' : 'The Recycle Bin is empty.'}</div>
+      ${isFull ? `
+      <div style="font-size:10px;border:1px solid #808080;padding:4px;background:#f8f8f8;">
+        • OLDGAME.EXE &nbsp;&nbsp; 18 KB<br>
+        • NOTES.TXT &nbsp;&nbsp; 3 KB<br>
+        • TEMP.BMP &nbsp;&nbsp; 21 KB
+      </div>` : ''}
+    </div>
+    <div class="statusbar"><div style="flex:1">3 object(s)</div><div>42 KB</div></div>`;
+  const win = createWindow('Recycle Bin', icon, content, 300, 180, 260, 90);
+  return win;
+}
+
+function openNotepad() {
+  const content = `
+    <div class="menubar">
+      <div class="menu-item" onclick="notepadAction(this,'new')">File</div>
+      <div class="menu-item" onclick="notepadAction(this,'edit')">Edit</div>
+      <div class="menu-item">Search</div><div class="menu-item">Help</div>
+    </div>
+    <textarea id="notepad-area" style="flex:1;border:none;resize:none;padding:4px 6px;font:12px/14px 'Courier New',monospace;outline:none;" spellcheck="false">Welcome to Windows 98!\r\n\r\nThis HTML clone was built to capture that sweet 90s nostalgia.\r\n\r\nDouble-click icons on the desktop or use the Start menu.\r\nTry the Paint app and draw something!\r\n\r\n- Made with ❤️ and JS in 2026</textarea>
+    <div class="statusbar"><div style="flex:1">Ln 1, Col 1</div><div>Windows 98 Notepad</div></div>`;
+  const win = createWindow('Untitled - Notepad', 'assets/icon_notepad.png', content, 420, 260, 180, 60);
+  setTimeout(() => {
+    const ta = win.querySelector('#notepad-area');
+    if (ta) {
+      ta.onkeyup = () => { /* status update omitted for brevity */ };
+      // demo typing if first open
+      if (!win.dataset.typed) {
+        win.dataset.typed = '1';
+      }
+    }
+  }, 120);
+  return win;
+}
+function notepadAction(el, type) {
+  playClick();
+  if (type === 'new') {
+    const ta = el.closest('.window').querySelector('textarea');
+    if (ta) ta.value = '';
+  } else {
+    alert('Feature not implemented in this demo (classic 98 vibe).');
+  }
+}
+
+function openPaint() {
+  const content = `
+    <div class="paint-toolbar">
+      <button class="retro-btn" onclick="paintClear(this)">New</button>
+      <button class="retro-btn" onclick="paintSave(this)">Save</button>
+      <span style="margin:0 6px;">|</span>
+      <div class="color-swatch" style="background:#000" onclick="setPaintColor('#000')"></div>
+      <div class="color-swatch" style="background:#c00" onclick="setPaintColor('#c00')"></div>
+      <div class="color-swatch" style="background:#00c" onclick="setPaintColor('#00c')"></div>
+      <div class="color-swatch" style="background:#0a0" onclick="setPaintColor('#0a0')"></div>
+      <div class="color-swatch" style="background:#ff0" onclick="setPaintColor('#ff0')"></div>
+      <div class="color-swatch" style="background:#f0f" onclick="setPaintColor('#f0f')"></div>
+      <div class="color-swatch" style="background:#fff;border-color:#888" onclick="setPaintColor('#fff')"></div>
+      <input type="range" min="1" max="12" value="3" id="paint-size" style="width:70px;margin-left:8px;">
+    </div>
+    <canvas id="paint-canvas" class="paint-canvas" width="420" height="260"></canvas>
+    <div class="statusbar"><div>Tool: Pencil &nbsp; | &nbsp; 420×260 px</div></div>`;
+  const win = createWindow('Untitled - Paint', 'assets/icon_paint.png', content, 440, 310, 200, 80);
+  setTimeout(() => {
+    const cvs = win.querySelector('#paint-canvas');
+    if (!cvs) return;
+    const ctx = cvs.getContext('2d', { alpha: true });
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,cvs.width,cvs.height);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    let drawing = false, lastX, lastY, color = '#000';
+    win._paintCtx = ctx; win._paintCvs = cvs;
+    function draw(e) {
+      if (!drawing) return;
+      const rect = cvs.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      ctx.strokeStyle = color; ctx.lineWidth = +win.querySelector('#paint-size').value || 3;
+      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke();
+      lastX = x; lastY = y;
+    }
+    cvs.onmousedown = (e) => { drawing = true; const r = cvs.getBoundingClientRect(); lastX = e.clientX-r.left; lastY = e.clientY-r.top; draw(e); };
+    window.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => drawing = false);
+    cvs.onmouseleave = () => drawing = false;
+    win._setColor = (c) => color = c;
+  }, 80);
+  return win;
+}
+function setPaintColor(c) {
+  const activeWin = document.querySelector('.window[data-app-id="paint"]');
+  if (activeWin && activeWin._setColor) activeWin._setColor(c);
+  playBeep(600,0.02);
+}
+function paintClear(el) { 
+  const win = el.closest('.window'); 
+  if (win._paintCvs) { const c = win._paintCtx; c.fillStyle='#fff'; c.fillRect(0,0,win._paintCvs.width,win._paintCvs.height); } 
+}
+function paintSave(el) { 
+  const win = el.closest('.window'); 
+  if (!win._paintCvs) return; 
+  const a = document.createElement('a'); 
+  a.download = 'paint-art.png'; 
+  a.href = win._paintCvs.toDataURL(); 
+  a.click(); 
+  playClick();
+}
+
+function openCalculator() {
+  const content = `
+    <div style="padding:4px 6px;">
+      <div class="calc-display" id="calc-display">0</div>
+      <div class="calc-buttons">
+        <div class="calc-btn" onclick="calcInput('C')">C</div>
+        <div class="calc-btn" onclick="calcInput('/')">/</div>
+        <div class="calc-btn" onclick="calcInput('*')">×</div>
+        <div class="calc-btn" onclick="calcInput('-')">-</div>
+        <div class="calc-btn" onclick="calcInput('7')">7</div><div class="calc-btn" onclick="calcInput('8')">8</div><div class="calc-btn" onclick="calcInput('9')">9</div>
+        <div class="calc-btn" onclick="calcInput('+')" style="grid-row:span 2">+</div>
+        <div class="calc-btn" onclick="calcInput('4')">4</div><div class="calc-btn" onclick="calcInput('5')">5</div><div class="calc-btn" onclick="calcInput('6')">6</div>
+        <div class="calc-btn" onclick="calcInput('1')">1</div><div class="calc-btn" onclick="calcInput('2')">2</div><div class="calc-btn" onclick="calcInput('3')">3</div>
+        <div class="calc-btn" onclick="calcInput('0')" style="grid-column:span 2">0</div><div class="calc-btn" onclick="calcInput('.')">.</div>
+        <div class="calc-btn" onclick="calcInput('=')" style="background:#b8b8ff">=</div>
+      </div>
+    </div>`;
+  const win = createWindow('Calculator', 'assets/icon_calc.png', content, 190, 210, 380, 120);
+  setTimeout(() => { win._calcValue = '0'; win._calcOp = null; win._calcPrev = null; }, 30);
+  return win;
+}
+window.calcInput = function(key) {
+  const win = document.querySelector('.window[data-app-id="calc"]');
+  if (!win) return;
+  const disp = win.querySelector('#calc-display');
+  let v = win._calcValue || '0';
+  if (key === 'C') { v = '0'; win._calcOp = null; win._calcPrev = null; }
+  else if ('0123456789.'.includes(key)) { v = (v === '0' && key !== '.') ? key : v + key; }
+  else if ('+-*/'.includes(key)) { win._calcOp = key; win._calcPrev = parseFloat(v); v = '0'; }
+  else if (key === '=') {
+    if (win._calcOp && win._calcPrev != null) {
+      const a = win._calcPrev, b = parseFloat(v);
+      let res = 0;
+      if (win._calcOp === '+') res = a + b;
+      if (win._calcOp === '-') res = a - b;
+      if (win._calcOp === '*') res = a * b;
+      if (win._calcOp === '/') res = b !== 0 ? a / b : 'ERR';
+      v = String(res).slice(0, 10);
+      win._calcOp = null; win._calcPrev = null;
+    }
+  }
+  win._calcValue = v;
+  disp.textContent = v;
+  playBeep(620, 0.025);
+};
+
+function openMinesweeper() {
+  const SIZE = 9, MINES = 10;
+  let grid = [], revealed = 0, gameOver = false, timer = 0, timerId = null, flags = 0;
+  const content = `
+    <div style="padding:6px;text-align:center;background:#c0c0c0;">
+      <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:4px;">
+        <div style="font-size:13px;border:2px inset #fff;padding:1px 6px;background:#000;color:#0f0;" id="ms-mines">${MINES}</div>
+        <div class="ms-smiley" id="ms-smiley">😊</div>
+        <div style="font-size:13px;border:2px inset #fff;padding:1px 6px;background:#000;color:#0f0;" id="ms-timer">000</div>
+      </div>
+      <div id="ms-grid" class="mines-grid" style="grid-template-columns:repeat(${SIZE},18px);"></div>
+    </div>`;
+  const win = createWindow('Minesweeper', 'assets/icon_minesweeper.png', content, 210, 260, 420, 90);
+
+  setTimeout(() => {
+    const gridEl = win.querySelector('#ms-grid');
+    const smile = win.querySelector('#ms-smiley');
+    const mineEl = win.querySelector('#ms-mines');
+    const timeEl = win.querySelector('#ms-timer');
+    let revealedGrid = [], flaggedGrid = [];
+
+    function newGame() {
+      grid = Array.from({length:SIZE}, () => Array(SIZE).fill(0));
+      revealedGrid = Array.from({length:SIZE}, () => Array(SIZE).fill(false));
+      flaggedGrid = Array.from({length:SIZE}, () => Array(SIZE).fill(false));
+      revealed = 0; gameOver = false; flags = 0; timer = 0;
+      if (timerId) clearInterval(timerId);
+      timeEl.textContent = '000';
+      mineEl.textContent = String(MINES).padStart(3,'0');
+      smile.textContent = '😊';
+      // place mines
+      let placed = 0;
+      while (placed < MINES) {
+        const r = Math.floor(Math.random()*SIZE), c = Math.floor(Math.random()*SIZE);
+        if (grid[r][c] !== -1) { grid[r][c] = -1; placed++; }
+      }
+      // numbers
+      for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++) if (grid[r][c] === -1) {
+        for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) {
+          const nr=r+dr, nc=c+dc; if (nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE && grid[nr][nc] !== -1) grid[nr][nc]++;
+        }
+      }
+      render();
+      startTimer();
+    }
+    function startTimer() {
+      if (timerId) clearInterval(timerId);
+      timerId = setInterval(() => {
+        if (!gameOver) { timer = Math.min(999, timer+1); timeEl.textContent = String(timer).padStart(3,'0'); }
+      }, 1000);
+    }
+    function render() {
+      gridEl.innerHTML = '';
+      for (let r=0; r<SIZE; r++) for (let c=0; c<SIZE; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'mine-cell';
+        const val = grid[r][c];
+        if (revealedGrid[r][c]) {
+          cell.classList.add('revealed');
+          if (val === -1) { cell.classList.add('mine'); cell.textContent = '💣'; }
+          else if (val > 0) { cell.textContent = val; cell.style.color = ['#00f','#080','#f00','#008','#800','#0aa','#000','#808'][val-1]; }
+        } else if (flaggedGrid[r][c]) {
+          cell.classList.add('flagged');
+        }
+        cell.onclick = () => { if (!gameOver && !flaggedGrid[r][c]) reveal(r,c); };
+        cell.oncontextmenu = (e) => { e.preventDefault(); if (!gameOver && !revealedGrid[r][c]) toggleFlag(r,c); };
+        gridEl.appendChild(cell);
+      }
+    }
+    function reveal(r, c) {
+      if (gameOver || revealedGrid[r][c] || flaggedGrid[r][c]) return;
+      revealedGrid[r][c] = true;
+      revealed++;
+      if (grid[r][c] === -1) { gameOver = true; smile.textContent = '😵'; playError(); render(); setTimeout(() => alert('BOOM! You hit a mine.'), 40); return; }
+      if (grid[r][c] === 0) {
+        for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) {
+          const nr=r+dr,nc=c+dc; if (nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE) reveal(nr,nc);
+        }
+      }
+      render();
+      if (revealed === SIZE*SIZE - MINES) { gameOver = true; smile.textContent = '😎'; playStartup(); setTimeout(() => alert('You win! Great job, 98 style.'), 60); }
+    }
+    function toggleFlag(r,c) {
+      if (revealedGrid[r][c]) return;
+      flaggedGrid[r][c] = !flaggedGrid[r][c];
+      flags += flaggedGrid[r][c] ? 1 : -1;
+      mineEl.textContent = String(MINES - flags).padStart(3,'0');
+      render();
+      playClick();
+    }
+    smile.onclick = () => newGame();
+    newGame();
+    // Auto reveal a few safe spots for demo showcase
+    setTimeout(() => { if (!gameOver) { reveal(0,0); reveal(0,2); reveal(4,4); } }, 650);
+  }, 90);
+  return win;
+}
+
+function openSolitaire() {
+  const content = `
+    <div style="background:#0a5a0a;height:100%;position:relative;overflow:hidden;" id="solitaire-board">
+      <div style="position:absolute;top:6px;left:6px;color:#fff;font-size:10px;">Klondike • Click stock to deal • Drag cards</div>
+      <button class="retro-btn" style="position:absolute;top:4px;right:6px;padding:1px 8px;" onclick="solitaireNewDeal(this)">Deal New</button>
+    </div>`;
+  const win = createWindow('Solitaire', 'assets/icon_solitaire.png', content, 560, 340, 90, 50);
+  setTimeout(() => initSolitaire(win), 100);
+  return win;
+}
+function initSolitaire(win) {
+  const board = win.querySelector('#solitaire-board');
+  let stock = [], waste = [], foundations = [[],[],[],[]], tableau = Array.from({length:7}, () => []);
+  const suits = ['♠','♥','♦','♣'];
+  const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  function makeDeck() {
+    const d = [];
+    for (let s=0;s<4;s++) for (let r=1;r<=13;r++) d.push({s, r, up:false});
+    return d.sort(() => Math.random()-0.5);
+  }
+  function drawCard(card, x, y, parent) {
+    const el = document.createElement('div');
+    el.className = 'card ' + (card.s % 2 === 1 ? 'red' : 'black');
+    el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.zIndex = 10 + y;
+    if (!card.up) { el.classList.add('back'); el.textContent = '🂠'; }
+    else { el.innerHTML = `${ranks[card.r-1]}<br>${suits[card.s]}`; }
+    parent.appendChild(el);
+    return el;
+  }
+  function render() {
+    board.querySelectorAll('.card').forEach(c => c.remove());
+    // stock
+    if (stock.length) {
+      const el = drawCard({s:0,r:1,up:false}, 20, 40, board);
+      el.onclick = () => dealFromStock();
+    }
+    // waste (top 3 shown staggered)
+    waste.slice(-3).forEach((card,i) => {
+      const el = drawCard({...card,up:true}, 80 + i*12, 40, board);
+      el.onmousedown = (e) => startDrag(e, card, 'waste', waste.length-1-i);
+    });
+    // foundations
+    foundations.forEach((pile, fi) => {
+      const x = 220 + fi * 70;
+      const base = document.createElement('div');
+      base.style.cssText = `position:absolute;left:${x}px;top:40px;width:36px;height:50px;border:1px dashed #0f0;`;
+      board.appendChild(base);
+      if (pile.length) {
+        const el = drawCard({...pile[pile.length-1], up:true}, x, 40, board);
+        el.onmousedown = (e) => startDrag(e, pile[pile.length-1], 'found', fi);
+      }
+    });
+    // tableau
+    tableau.forEach((pile, ti) => {
+      const x = 30 + ti * 68;
+      pile.forEach((card, ci) => {
+        const el = drawCard(card, x, 110 + ci * 16, board);
+        if (card.up) el.onmousedown = (e) => startDrag(e, card, 'tab', ti, ci);
+      });
+    });
+  }
+  let dragEl = null, dragData = null;
+  function startDrag(e, card, from, idx, subIdx) {
+    e.stopPropagation();
+    // simple click-to-auto or full drag would be long; simplified: double click auto move to foundation
+    // For full experience we implement basic drag
+    if (e.detail === 2) { autoToFoundation(card, from, idx); render(); return; }
+    dragData = {card, from, idx, subIdx};
+    dragEl = e.currentTarget.cloneNode(true);
+    dragEl.style.opacity = '0.85'; dragEl.style.pointerEvents = 'none'; dragEl.style.zIndex = '9999';
+    board.appendChild(dragEl);
+    const move = (ev) => { dragEl.style.left = (ev.clientX - 18) + 'px'; dragEl.style.top = (ev.clientY - 25) + 'px'; };
+    const up = (ev) => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+      if (dragEl) dragEl.remove();
+      tryDrop(ev.clientX, ev.clientY);
+      render();
+    };
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up, {once:true});
+  }
+  function tryDrop(mx, my) {
+    if (!dragData) return;
+    // hit test simple rectangles for piles
+    const rect = board.getBoundingClientRect();
+    const rx = mx - rect.left, ry = my - rect.top;
+    // check foundations
+    for (let fi=0; fi<4; fi++) {
+      const fx = 220 + fi*70;
+      if (rx > fx && rx < fx+40 && ry > 30 && ry < 110) {
+        if (canMoveToFoundation(dragData.card, foundations[fi])) {
+          moveCard(dragData, 'found', fi); return;
+        }
+      }
+    }
+    // check tableau
+    for (let ti=0; ti<7; ti++) {
+      const tx = 30 + ti*68;
+      if (rx > tx && rx < tx+50 && ry > 100) {
+        if (canMoveToTableau(dragData.card, tableau[ti])) {
+          moveCard(dragData, 'tab', ti); return;
+        }
+      }
+    }
+  }
+  function canMoveToFoundation(card, pile) {
+    if (!pile.length) return card.r === 1;
+    const top = pile[pile.length-1];
+    return card.s === top.s && card.r === top.r + 1;
+  }
+  function canMoveToTableau(card, pile) {
+    if (!pile.length) return card.r === 13;
+    const top = pile[pile.length-1];
+    if (!top.up) return false;
+    return (card.s % 2 !== top.s % 2) && card.r === top.r - 1;
+  }
+  function moveCard(d, toType, toIdx) {
+    let srcPile;
+    if (d.from === 'tab') srcPile = tableau[d.idx];
+    else if (d.from === 'waste') srcPile = waste;
+    else if (d.from === 'found') srcPile = foundations[d.idx];
+    // remove
+    const cIdx = srcPile.indexOf(d.card);
+    if (cIdx > -1) srcPile.splice(cIdx, 1);
+    // add
+    if (toType === 'found') foundations[toIdx].push(d.card);
+    else if (toType === 'tab') tableau[toIdx].push(d.card);
+    else if (toType === 'waste') waste.push(d.card);
+    // flip next in tableau
+    if (d.from === 'tab' && tableau[d.idx].length) tableau[d.idx][tableau[d.idx].length-1].up = true;
+  }
+  function autoToFoundation(card, from, idx) {
+    for (let fi=0; fi<4; fi++) {
+      if (canMoveToFoundation(card, foundations[fi])) {
+        moveCard({card, from, idx}, 'found', fi); return true;
+      }
+    }
+    return false;
+  }
+  function dealFromStock() {
+    if (!stock.length) { if (waste.length) { stock = waste.reverse(); waste = []; } }
+    else { waste.push(stock.pop()); waste[waste.length-1].up = true; }
+    render();
+    playClick();
+  }
+  function newDeal() {
+    const deck = makeDeck();
+    stock = deck; waste = []; foundations = [[],[],[],[]]; tableau = Array.from({length:7},()=>[]);
+    for (let i=0; i<7; i++) {
+      for (let k=0; k<=i; k++) {
+        const c = stock.pop(); c.up = (k === i); tableau[i].push(c);
+      }
+    }
+    render();
+  }
+  window.solitaireNewDeal = (el) => { newDeal(); playClick(); };
+  newDeal();
+}
+
+function openIE() {
+  const pages = {
+    home: `<div style="text-align:center;padding-top:20px;">
+      <h2 style="color:#00c;margin:0;">Welcome to The Microsoft Network</h2>
+      <p style="max-width:320px;margin:12px auto;">The Internet is for everyone. Connect with friends, explore new worlds, and download the latest drivers for Windows 98.</p>
+      <div style="margin:16px 0;">
+        <a onclick="ieNavigate('tour')">Take the Windows 98 Tour</a><br>
+        <a onclick="ieNavigate('news')">Today's Technology News (1998)</a><br>
+        <a onclick="ieNavigate('error')">Visit microsoft.com</a>
+      </div>
+      <div style="font-size:9px;margin-top:30px;color:#666;">Best viewed with Internet Explorer 4.0</div>
+    </div>`,
+    tour: `<div><h3>Windows 98 Tour</h3><p>Discover the new Active Desktop, improved USB support, and the revolutionary FAT32 file system. Your PC has never been this fun!</p><a onclick="ieNavigate('home')">← Back to Home</a></div>`,
+    news: `<div><h3>Top Stories - June 1998</h3><ul><li>Apple announces new iMac with Bondi Blue design</li><li>Netscape vs Microsoft: the browser wars heat up</li><li>Diablo II in development at Blizzard</li></ul><a onclick="ieNavigate('home')">← Back</a></div>`,
+    error: `<div style="color:#c00;"><h3>404 - Page Not Found</h3><p>Sorry, the page you requested is not available. Please check the URL and try again later.<br><br>Connection was good in 1998 though.</p><a onclick="ieNavigate('home')">Return Home</a></div>`
+  };
+  const content = `
+    <div class="ie-toolbar">
+      <div class="ie-btn" onclick="ieBack()">← Back</div>
+      <div class="ie-btn" onclick="ieNavigate('home')">Home</div>
+      <div class="ie-btn">Stop</div>
+      <div class="ie-btn">Refresh</div>
+      <div class="ie-address"><span style="font-size:9px;">Address:</span> <input id="ie-url" value="http://www.msn.com/" style="flex:1;font-size:10px;border:1px inset #666;padding:1px 3px;"></div>
+      <div class="ie-btn" onclick="ieGo()">Go</div>
+    </div>
+    <div class="ie-content" id="ie-content">${pages.home}</div>`;
+  const win = createWindow('Internet Explorer', 'assets/icon_ie.png', content, 460, 300, 160, 50);
+  win._ieHistory = ['home'];
+  win._ieIdx = 0;
+  setTimeout(() => {
+    window.ieNavigate = (p) => {
+      const c = win.querySelector('#ie-content');
+      c.innerHTML = pages[p] || pages.home;
+      if (win._ieHistory[win._ieIdx] !== p) {
+        win._ieHistory = win._ieHistory.slice(0, win._ieIdx+1);
+        win._ieHistory.push(p);
+        win._ieIdx = win._ieHistory.length-1;
+      }
+      playClick();
+    };
+    window.ieBack = () => {
+      if (win._ieIdx > 0) { win._ieIdx--; const c = win.querySelector('#ie-content'); c.innerHTML = pages[win._ieHistory[win._ieIdx]] || pages.home; }
+      playClick();
+    };
+    window.ieGo = () => {
+      const url = win.querySelector('#ie-url').value.toLowerCase();
+      if (url.includes('microsoft')) ieNavigate('error');
+      else ieNavigate('news');
+    };
+  }, 50);
+  return win;
+}
+
+function openDOS() {
+  const content = `
+    <div class="dos-screen" id="dos-screen" style="height:178px;">Microsoft(R) Windows 98\n   (C)Copyright Microsoft Corp 1981-1998\n\nC:\\WINDOWS> _</div>
+    <div style="background:#111;padding:2px 4px;display:flex;">
+      <span style="color:#0f0;font:12px monospace;">C:\\&gt;</span>
+      <input id="dos-input" style="flex:1;background:#000;color:#0f0;border:none;font:12px 'Courier New',monospace;outline:none;padding-left:4px;" spellcheck="false">
+    </div>`;
+  const win = createWindow('MS-DOS Prompt', 'assets/icon_dos.png', content, 440, 220, 220, 110);
+  setTimeout(() => {
+    const screen = win.querySelector('#dos-screen');
+    const input = win.querySelector('#dos-input');
+    let cwd = 'C:\\WINDOWS';
+    const log = (txt) => { screen.textContent += (screen.textContent.endsWith('> ') ? '' : '\n') + txt; screen.scrollTop = 99999; };
+    screen.textContent = `Microsoft(R) Windows 98\n   (C)Copyright Microsoft Corp 1981-1998\n\n${cwd}> `;
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        log(cmd);
+        input.value = '';
+        const lower = cmd.toLowerCase();
+        if (lower === 'dir') log(' Volume in drive C has no label.\n Directory of ' + cwd + '\n\nCOMMAND  COM        94,852  04-23-98\nNOTEPAD  EXE        32,768\nPAINT    EXE        88,064\nSOL      EXE        45,120\nWIN      COM         1,234\n        6 file(s)    262,038 bytes\n                 1,245,678,912 bytes free');
+        else if (lower.startsWith('cd ')) { cwd = cmd.slice(3).toUpperCase().replace(/\//g,'\\'); if (!cwd.startsWith('C:')) cwd = 'C:\\' + cwd; log(''); }
+        else if (lower === 'cls') { screen.textContent = cwd + '> '; }
+        else if (lower === 'ver') log('Windows 98 [Version 4.10.1998]');
+        else if (lower === 'win') log('Windows is already running.');
+        else if (lower === 'calc' || lower === 'calculator') { openApp('calc'); log('Launching Calculator...'); }
+        else if (lower === 'edit' || lower === 'notepad') { openApp('notepad'); log('Starting Notepad...'); }
+        else if (lower === 'help') log('Commands: dir, cd, cls, ver, calc, edit, win, mem, format, echo');
+        else if (lower === 'mem') log('Memory Type        Total       Used       Free\n----------------  ---------  ---------  ---------\nConventional         640K       128K       512K\nExtended (XMS)     64,512K     12,288K    52,224K\nTotal memory       65,152K     12,416K    52,736K');
+        else if (lower === 'format c:') log('WARNING: ALL DATA ON C: WILL BE LOST!\nJust kidding. This is a demo. :)');
+        else if (lower.startsWith('echo ')) log(cmd.slice(5));
+        else if (lower) log('Bad command or file name');
+        screen.textContent = screen.textContent.replace(/> $/, '> ');
+        screen.scrollTop = 99999;
+        playBeep(440, 0.03);
+      }
+    };
+    input.focus();
+  }, 60);
+  return win;
+}
+
+function openControlPanel() {
+  const content = `
+    <div class="window-content" style="padding:8px;">
+      <div class="icon-grid">
+        <div class="icon-item" onclick="alert('Display settings would open here (wallpaper changer not fully wired).');playClick();"><img src="assets/icon_paint.png"><div>Display</div></div>
+        <div class="icon-item" onclick="alert('Sounds (beep only in this demo).');playClick();"><img src="assets/icon_dos.png"><div>Sounds</div></div>
+        <div class="icon-item" onclick="alert('Date/Time: ' + new Date().toLocaleString());playClick();"><img src="assets/icon_control.png"><div>Date/Time</div></div>
+        <div class="icon-item" onclick="openApp('mycomputer');"><img src="assets/icon_my_computer.png"><div>System</div></div>
+      </div>
+    </div>`;
+  return createWindow('Control Panel', 'assets/icon_control.png', content, 340, 200, 300, 70);
+}
+
+// ============== START MENU ==============
+function initStartMenu() {
+  const btn = document.getElementById('start-btn');
+  const menu = document.getElementById('start-menu');
+  btn.onclick = () => {
+    playClick();
+    menu.classList.toggle('open');
+    if (menu.classList.contains('open')) {
+      setTimeout(() => document.addEventListener('click', closeMenuOnce, {once:true}), 10);
+    }
+  };
+  menu.querySelectorAll('.start-menu-item[data-action]').forEach(item => {
+    item.onclick = (e) => {
+      e.stopImmediatePropagation();
+      const action = item.dataset.action;
+      menu.classList.remove('open');
+      playClick();
+      if (action === 'shutdown') {
+        document.getElementById('shutdown-screen').style.display = 'flex';
+        playTone(200, 1.2, 'sine', 0.4);
+        setTimeout(() => document.getElementById('shutdown-screen').onclick = () => location.reload(), 200);
+      } else {
+        openApp(action);
+      }
+    };
+  });
+  function closeMenuOnce(e) { if (!menu.contains(e.target)) menu.classList.remove('open'); }
+}
+
+// ============== CLOCK ==============
+function initClock() {
+  const el = document.getElementById('clock');
+  function tick() {
+    const d = new Date();
+    let h = d.getHours(), m = d.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    el.textContent = `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+  tick(); setInterval(tick, 30000);
+}
+
+// ============== BOOT + DEMO ==============
+async function bootAndDemo() {
+  const boot = document.getElementById('boot-screen');
+  const desk = document.getElementById('desktop');
+  const bar = document.getElementById('taskbar');
+  const prog = document.getElementById('boot-progress');
+
+  // Boot progress
+  await new Promise(r => setTimeout(r, 180));
+  prog.style.width = '100%';
+  await new Promise(r => setTimeout(r, 2400));
+
+  // Fade boot
+  boot.style.transition = 'opacity 420ms';
+  boot.style.opacity = '0';
+  await new Promise(r => setTimeout(r, 440));
+  boot.style.display = 'none';
+
+  // Show desktop + taskbar
+  desk.style.display = 'block';
+  bar.style.display = 'flex';
+
+  initDesktopIcons();
+  initStartMenu();
+  initClock();
+  initAudio();
+  playStartup();
+
+  // === AUTO DEMO: click each app after ~2s each ===
+  const demoSequence = ['mycomputer', 'notepad', 'paint', 'calc', 'minesweeper', 'solitaire', 'ie', 'dos'];
+  let delay = 1850;
+
+  for (const appId of demoSequence) {
+    await new Promise(r => setTimeout(r, delay));
+    // "click" the icon visually
+    const iconEl = document.querySelector(`.desktop-icon[data-app="${appId}"]`);
+    if (iconEl) {
+      iconEl.classList.add('selected');
+      playClick();
+      setTimeout(() => iconEl.classList.remove('selected'), 380);
+    }
+    // open the app
+    const w = openApp(appId);
+    // Extra showcase actions inside some windows
+    if (appId === 'notepad' && w) {
+      setTimeout(() => {
+        const ta = w.querySelector('textarea');
+        if (ta) {
+          ta.value = ta.value + '\n\n[Demo] Typing a note in classic Notepad...';
+          ta.scrollTop = 999;
+        }
+      }, 420);
+    }
+    if (appId === 'paint' && w) {
+      setTimeout(() => {
+        const cvs = w.querySelector('#paint-canvas');
+        if (cvs && w._paintCtx) {
+          const ctx = w._paintCtx;
+          ctx.strokeStyle = '#c00'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(60,70); ctx.lineTo(140,130); ctx.lineTo(200,55); ctx.stroke();
+          ctx.strokeStyle = '#00a'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(280, 110, 38, 0, Math.PI*2); ctx.stroke();
+        }
+      }, 520);
+    }
+    if (appId === 'minesweeper' && w) {
+      // already auto clicks some cells inside openMinesweeper
+    }
+    if (appId === 'solitaire' && w) {
+      setTimeout(() => { if (w && typeof window.solitaireNewDeal === 'function') {/* already dealt */ } }, 300);
+    }
+    if (appId === 'ie' && w) {
+      setTimeout(() => {
+        const c = w.querySelector('#ie-content');
+        if (c) c.innerHTML = `<div style="padding:12px;"><h3 style="margin:0 0 6px;">Welcome to MSN.com (1998)</h3><p>The web used to feel like this. Magical.</p><small>Click links in the real demo!</small></div>`;
+      }, 480);
+    }
+    if (appId === 'dos' && w) {
+      setTimeout(() => {
+        const s = w.querySelector('#dos-screen');
+        if (s) {
+          s.textContent += '\nC:\\WINDOWS> dir\n\nCOMMAND  COM\nNOTEPAD  EXE\n... (demo auto-listed)';
+          s.scrollTop = 999;
+        }
+      }, 380);
+    }
+    delay = 1950; // steady 2s-ish pacing
+  }
+
+  // Final message
+  setTimeout(() => {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;bottom:40px;right:12px;background:#c0c0c0;border:2px outset #fff;padding:6px 10px;font-size:10px;z-index:9999;';
+    msg.textContent = 'Demo complete — explore the desktop freely!';
+    document.body.appendChild(msg);
+    setTimeout(() => msg.style.transition = 'opacity 1.2s', 2800);
+    setTimeout(() => msg.style.opacity = '0', 3200);
+    setTimeout(() => msg.remove(), 4600);
+  }, 620);
+}
+
+// Boot on load
+window.onload = () => {
+  // Keyboard ESC closes top window
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const wins = document.querySelectorAll('.window');
+      if (wins.length) {
+        const top = Array.from(wins).sort((a,b) => +b.style.zIndex - +a.style.zIndex)[0];
+        top.querySelector('.close-btn')?.click();
+      }
+    }
+    if (e.key.toLowerCase() === '?' && document.activeElement.tagName === 'BODY') {
+      document.getElementById('start-menu').classList.toggle('open');
+    }
+  });
+  // Easter egg: konami-ish or just start
+  bootAndDemo();
+};
+</script>
+</body>
+</html>

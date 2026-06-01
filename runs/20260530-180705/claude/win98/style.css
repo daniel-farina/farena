@@ -1,0 +1,214 @@
+/* ===== Windows 98 — global ===== */
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body{ width:100%; height:100%; overflow:hidden; }
+body{
+  font-family: "Pixelated MS Sans Serif","MS Sans Serif",Tahoma,Geneva,sans-serif;
+  font-size:11px; background:#000; cursor:default; user-select:none;
+  -webkit-font-smoothing:none;
+}
+.screen{ position:fixed; inset:0; }
+.hidden{ display:none !important; }
+
+/* ===== BIOS ===== */
+#bios{ background:#000; color:#c0c0c0; font-family:"Courier New",monospace; font-size:15px; padding:18px 26px; line-height:1.5; }
+.bios-logo{ display:flex; align-items:center; gap:18px; margin-bottom:18px; }
+.energy-star{ width:70px; height:54px; border:2px solid #c0c0c0; border-radius:6px;
+  background:radial-gradient(circle at 50% 38%, #2a7 0 26%, transparent 27%);
+  position:relative; flex:none; }
+.energy-star::after{ content:"ENERGY"; position:absolute; bottom:4px; left:0; right:0; text-align:center; font-size:8px; color:#2a7; }
+.bios-brand .big{ font-size:17px; }
+.bios-body div{ white-space:pre; }
+.bios-spacer{ height:14px; }
+.bios-bottom{ margin-top:30px; }
+.blink{ animation:blink 1s steps(2) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+/* ===== Splash ===== */
+#splash{ background:#000; }
+.splash-art{ position:absolute; inset:0; background:linear-gradient(180deg,#0a1a4f 0%,#1746b0 45%,#3f86e0 100%); }
+.splash-clouds{ position:absolute; inset:0;
+  background:
+    radial-gradient(60px 28px at 22% 70%, rgba(255,255,255,.85), transparent 70%),
+    radial-gradient(90px 38px at 30% 76%, rgba(255,255,255,.7), transparent 70%),
+    radial-gradient(70px 30px at 75% 64%, rgba(255,255,255,.8), transparent 70%),
+    radial-gradient(120px 46px at 84% 72%, rgba(255,255,255,.6), transparent 70%);
+}
+.splash-content{ position:absolute; top:34%; left:0; right:0; display:flex; justify-content:center; align-items:flex-end; gap:22px; }
+.big-logo{ width:120px; height:104px; }
+.splash-text{ color:#fff; }
+.splash-micro{ font-style:italic; font-size:26px; }
+.splash-win{ font-weight:bold; font-size:62px; line-height:.9; }
+.splash-win .reg{ font-size:18px; vertical-align:super; }
+.splash-bar{ position:absolute; bottom:90px; left:50%; transform:translateX(-50%); width:240px; height:16px; border:2px solid #fff; padding:2px; }
+.splash-bar-fill{ height:100%; width:0; background:repeating-linear-gradient(90deg,#0a3 0 14px,transparent 14px 18px); animation:splashbar 3.2s linear forwards; }
+@keyframes splashbar{ to{ width:100%; } }
+.splash-foot{ position:absolute; bottom:30px; left:0; right:0; text-align:center; color:#cdd9ff; font-size:12px; }
+
+/* ===== Windows logo (CSS flag) ===== */
+.win-logo{ display:inline-grid; grid-template-columns:1fr 1fr; gap:9%; transform:perspective(140px) rotateY(-12deg) skewY(-6deg); }
+.win-logo .flag{ border-radius:2px 6px 2px 2px; }
+.flag.red{ background:#f33b2d; } .flag.green{ background:#46c34a; }
+.flag.blue{ background:#22a3e0; } .flag.yellow{ background:#ffc40c; }
+.small-logo{ width:18px; height:16px; gap:8%; }
+
+/* ===== Desktop ===== */
+#desktop{ background:#008080; }
+.desktop-icons{ position:absolute; top:8px; left:8px; display:flex; flex-direction:column; flex-wrap:wrap; gap:2px; height:calc(100% - 50px); align-content:flex-start; }
+.dicon{ width:80px; padding:6px 4px; text-align:center; color:#fff; cursor:default; border:1px dotted transparent; }
+.dicon img{ width:34px; height:34px; image-rendering:pixelated; pointer-events:none; }
+.dicon span{ display:block; margin-top:4px; font-size:11px; line-height:1.2; }
+.dicon.selected{ border:1px dotted #fff; }
+.dicon.selected img{ filter:drop-shadow(0 0 0 #008080); opacity:.85; }
+.dicon.selected span{ background:#080; color:#fff; }
+
+/* ===== Bevels ===== */
+.out{ border:2px solid; border-color:#fff #808080 #808080 #fff; box-shadow:inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf; }
+.in{ border:2px solid; border-color:#808080 #fff #fff #808080; box-shadow:inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf; }
+
+/* ===== Window ===== */
+.window{ position:absolute; min-width:160px; background:#c0c0c0; border:2px solid;
+  border-color:#dfdfdf #000 #000 #dfdfdf; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #fff;
+  display:flex; flex-direction:column; }
+.titlebar{ height:20px; margin:2px; display:flex; align-items:center; padding:0 2px 0 3px;
+  background:linear-gradient(90deg,#000080,#1084d0); color:#fff; font-weight:bold; cursor:default; }
+.window.inactive .titlebar{ background:linear-gradient(90deg,#808080,#b5b5b5); }
+.titlebar img{ width:16px; height:16px; margin-right:4px; image-rendering:pixelated; }
+.titlebar .ttl{ flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tb-btns{ display:flex; gap:2px; }
+.tb-btn{ width:16px; height:14px; background:#c0c0c0; font-size:9px; font-weight:bold; line-height:11px; text-align:center;
+  border:1px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; cursor:default; }
+.tb-btn:active{ border-color:#000 #fff #fff #000; box-shadow:inset 1px 1px 0 #808080; }
+.menubar{ display:flex; gap:2px; padding:1px 2px; }
+.menubar span{ padding:2px 6px; }
+.menubar span u{ text-decoration:underline; }
+.menubar span:hover{ background:#000080; color:#fff; }
+.win-body{ flex:1; margin:0 2px 2px; overflow:auto; position:relative; background:#fff; }
+.statusbar{ margin:0 2px 2px; height:18px; display:flex; gap:3px; }
+.statusbar .sb{ flex:1; padding:1px 5px; font-size:11px; }
+
+/* ===== Taskbar ===== */
+.taskbar{ position:absolute; left:0; right:0; bottom:0; height:30px; background:#c0c0c0;
+  border-top:2px solid #fff; display:flex; align-items:center; padding:2px; gap:4px; z-index:9000; }
+.start-btn{ display:flex; align-items:center; gap:4px; height:23px; padding:0 7px 0 4px; font-weight:bold; font-size:11px;
+  background:#c0c0c0; border:2px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; cursor:default; font-family:inherit; }
+.start-btn.on{ border-color:#000 #fff #fff #000; box-shadow:inset 1px 1px 0 #808080; }
+.quick-launch{ display:flex; gap:3px; padding:0 5px; border-left:1px solid #808080; border-right:1px solid #808080; box-shadow:-1px 0 0 #fff,inset -1px 0 0 0 #fff; height:22px; align-items:center; }
+.quick-launch img{ width:18px; height:18px; image-rendering:pixelated; }
+.task-buttons{ flex:1; display:flex; gap:3px; overflow:hidden; }
+.task-btn{ display:flex; align-items:center; gap:4px; min-width:130px; max-width:160px; height:23px; padding:0 6px; font-size:11px;
+  background:#c0c0c0; border:2px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; cursor:default; overflow:hidden; white-space:nowrap; }
+.task-btn img{ width:16px; height:16px; image-rendering:pixelated; }
+.task-btn.active{ border-color:#000 #fff #fff #000; box-shadow:inset 1px 1px 0 #808080;
+  background-image:repeating-linear-gradient(45deg,#bbb 0 1px,#c0c0c0 1px 2px); font-weight:bold; }
+.tray{ display:flex; align-items:center; gap:6px; height:22px; padding:0 7px 0 8px;
+  border:1px solid; border-color:#808080 #fff #fff #808080; }
+.tray img{ width:16px; height:16px; }
+#clock{ font-size:11px; }
+
+/* ===== Start menu ===== */
+.startmenu{ position:absolute; bottom:30px; left:2px; width:200px; background:#c0c0c0; display:flex;
+  border:2px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; z-index:9500; }
+.startmenu-side{ width:24px; background:linear-gradient(#000080,#1084d0); position:relative; }
+.startmenu-side span{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%) rotate(-90deg); transform-origin:center; white-space:nowrap; color:#c0c0c0; font-size:17px; }
+.startmenu-side b{ color:#fff; }
+.startmenu-items{ flex:1; padding:2px; }
+.sm-item{ display:flex; align-items:center; gap:8px; padding:4px 6px; }
+.sm-item .sm-ico{ width:24px; height:24px; image-rendering:pixelated; }
+.sm-item span{ flex:1; }
+.sm-arrow{ flex:none !important; font-size:8px; }
+.sm-item:hover{ background:#000080; color:#fff; }
+.sm-sep{ height:0; border-top:1px solid #808080; border-bottom:1px solid #fff; margin:3px 2px; }
+
+/* submenu */
+.submenu{ position:absolute; background:#c0c0c0; padding:2px; min-width:170px;
+  border:2px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; z-index:9600; }
+
+/* ===== generic UI ===== */
+button.w98{ font-family:inherit; font-size:11px; background:#c0c0c0; padding:3px 10px; min-width:60px;
+  border:2px solid; border-color:#fff #000 #000 #fff; box-shadow:inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf; cursor:default; }
+button.w98:active{ border-color:#000 #fff #fff #000; box-shadow:inset 1px 1px 0 #808080; }
+.field{ border:2px solid; border-color:#808080 #fff #fff #808080; background:#fff; }
+
+/* ===== Notepad ===== */
+.notepad-area{ width:100%; height:100%; border:0; resize:none; font-family:"Courier New",monospace; font-size:13px; padding:3px; outline:none; }
+
+/* ===== Paint ===== */
+.paint{ display:flex; height:100%; background:#c0c0c0; }
+.paint-tools{ width:54px; display:flex; flex-wrap:wrap; gap:2px; padding:3px; align-content:flex-start; }
+.ptool{ width:23px; height:22px; display:flex; align-items:center; justify-content:center; font-size:13px;
+  background:#c0c0c0; border:1px solid; border-color:#fff #000 #000 #fff; }
+.ptool.sel{ border-color:#000 #fff #fff #000; background:#dcdcdc; }
+.paint-right{ flex:1; display:flex; flex-direction:column; padding:3px; }
+.paint-canvas-wrap{ flex:1; background:#808080; padding:2px; overflow:auto; }
+#paint-canvas{ background:#fff; cursor:crosshair; display:block; }
+.paint-palette{ display:flex; flex-wrap:wrap; gap:2px; padding:4px 2px 0; height:46px; align-content:center; width:170px; }
+.pcolor{ width:15px; height:15px; border:1px solid #808080; }
+
+/* ===== Minesweeper ===== */
+.mine{ background:#c0c0c0; padding:6px; }
+.mine-head{ margin-bottom:6px; padding:4px; display:flex; justify-content:space-between; align-items:center; }
+.mine-lcd{ background:#000; color:#f00; font-family:"Courier New",monospace; font-weight:bold; font-size:22px; padding:1px 4px; letter-spacing:1px; }
+.mine-face{ width:30px; height:30px; font-size:17px; display:flex; align-items:center; justify-content:center; background:#c0c0c0;
+  border:2px solid; border-color:#fff #808080 #808080 #fff; }
+.mine-grid{ padding:3px; display:grid; gap:0; }
+.cell{ width:20px; height:20px; font-weight:bold; font-size:13px; display:flex; align-items:center; justify-content:center;
+  background:#c0c0c0; border:2px solid; border-color:#fff #808080 #808080 #fff; cursor:default; }
+.cell.open{ border:1px solid #808080; background:#c0c0c0; }
+.cell.mine{ background:#f00; }
+.c1{color:#0000ff}.c2{color:#008000}.c3{color:#ff0000}.c4{color:#000080}
+.c5{color:#800000}.c6{color:#008080}.c7{color:#000}.c8{color:#808080}
+
+/* ===== My Computer / Explorer ===== */
+.explorer{ height:100%; display:flex; flex-direction:column; background:#fff; }
+.explorer-bar{ background:#c0c0c0; padding:2px 4px; display:flex; gap:6px; align-items:center; border-bottom:1px solid #808080; }
+.addr{ flex:1; display:flex; align-items:center; gap:4px; }
+.addr .field{ flex:1; padding:2px 4px; display:flex; align-items:center; gap:4px; }
+.explorer-body{ flex:1; padding:10px; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; overflow:auto; }
+.ex-item{ width:84px; padding:6px; text-align:center; }
+.ex-item img{ width:32px; height:32px; image-rendering:pixelated; }
+.ex-item span{ display:block; margin-top:3px; }
+.ex-item:hover span{ background:#000080; color:#fff; }
+
+/* ===== Internet Explorer ===== */
+.ie-page{ height:100%; display:flex; flex-direction:column; }
+.ie-nav{ background:#c0c0c0; padding:3px; display:flex; gap:4px; align-items:center; }
+.ie-content{ flex:1; overflow:auto; background:#fff; padding:0; }
+.ie-hero{ background:linear-gradient(135deg,#000080,#1084d0); color:#fff; padding:24px; text-align:center; }
+.ie-hero h1{ font-size:26px; margin-bottom:6px; }
+.ie-body{ padding:16px 22px; font-size:13px; line-height:1.6; color:#000; }
+.ie-body a{ color:#0000ee; text-decoration:underline; }
+.ie-marquee{ background:#ffff00; color:#000; padding:4px; font-weight:bold; overflow:hidden; white-space:nowrap; }
+.ie-marquee span{ display:inline-block; padding-left:100%; animation:marq 12s linear infinite; }
+@keyframes marq{ to{ transform:translateX(-100%); } }
+.under-construction{ display:block; margin:14px auto; }
+
+/* ===== Calculator ===== */
+.calc{ background:#c0c0c0; padding:6px; width:200px; }
+.calc-disp{ text-align:right; font-family:"Courier New",monospace; font-size:18px; padding:3px 6px; margin-bottom:6px; background:#fff; }
+.calc-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:3px; }
+.calc-grid button{ font-family:inherit; padding:6px 0; background:#c0c0c0; border:2px solid; border-color:#fff #808080 #808080 #fff; cursor:default; }
+.calc-grid button:active{ border-color:#808080 #fff #fff #808080; }
+.calc-op{ color:#f00; } .calc-fn{ color:#00f; }
+
+/* ===== Media Player ===== */
+.amp{ background:#000; color:#0f0; font-family:"Courier New",monospace; padding:8px; height:100%; }
+.amp-disp{ background:#111; border:1px solid #0a0; padding:6px; margin-bottom:8px; }
+.amp-title{ color:#0f0; font-size:13px; white-space:nowrap; overflow:hidden; }
+.amp-time{ font-size:28px; color:#0f0; letter-spacing:2px; }
+.amp-viz{ display:flex; gap:2px; height:34px; align-items:flex-end; margin-top:6px; }
+.amp-viz i{ flex:1; background:linear-gradient(#0f0,#0a0); height:10%; }
+.amp-ctrls{ display:flex; gap:4px; margin-top:8px; }
+.amp-ctrls button{ font-family:inherit; flex:1; padding:5px 0; background:#222; color:#0f0; border:1px solid #0a0; cursor:default; }
+
+/* ===== Welcome / About dialogs ===== */
+.dlg-body{ padding:14px; background:#c0c0c0; }
+.dlg-row{ display:flex; gap:12px; align-items:flex-start; }
+.dlg-row img{ width:38px; height:38px; }
+.dlg-btns{ display:flex; justify-content:center; gap:8px; margin-top:14px; }
+p.dlg-p{ margin-bottom:8px; line-height:1.5; }
+
+/* fake selected ant-march on desktop drag not implemented; keep simple */
+::-webkit-scrollbar{ width:16px; height:16px; }
+::-webkit-scrollbar-track{ background:#dfdfdf; }
+::-webkit-scrollbar-thumb{ background:#c0c0c0; border:2px solid; border-color:#fff #808080 #808080 #fff; }
+::-webkit-scrollbar-button{ display:block; height:16px; background:#c0c0c0; border:2px solid; border-color:#fff #808080 #808080 #fff; }

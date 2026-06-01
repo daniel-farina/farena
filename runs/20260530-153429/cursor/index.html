@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows 98</title>
+  <link rel="stylesheet" href="css/win98.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%23ff0000' x='0' y='0' width='4' height='4'/><rect fill='%2300aa00' x='4' y='0' width='4' height='4'/><rect fill='%230000ff' x='8' y='0' width='4' height='4'/><rect fill='%23ffff00' x='0' y='4' width='4' height='4'/></svg>">
+</head>
+<body>
+
+  <!-- Boot Screen -->
+  <div id="boot-screen">
+    <div class="boot-logo">
+      <div class="boot-flag">
+        <span class="r"></span><span class="g"></span><span class="b"></span><span class="y"></span>
+        <span class="g"></span><span class="b"></span><span class="y"></span><span class="r"></span>
+        <span class="b"></span><span class="y"></span><span class="r"></span><span class="g"></span>
+        <span class="y"></span><span class="r"></span><span class="g"></span><span class="b"></span>
+      </div>
+      <div class="boot-text">
+        <h1>Microsoft Windows 98</h1>
+        <p>Copyright © 1981-1998 Microsoft Corp.</p>
+      </div>
+    </div>
+    <div class="boot-progress">
+      <div class="boot-progress-bar" id="boot-progress-bar"></div>
+    </div>
+    <div class="boot-status" id="boot-status">Starting Windows 98...</div>
+  </div>
+
+  <!-- Desktop -->
+  <div id="desktop">
+    <div id="selection-rect"></div>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="context-menu"></div>
+
+  <!-- Start Menu -->
+  <nav id="start-menu">
+    <div class="start-sidebar">
+      <span>Windows<span style="font-weight:normal;font-size:14px">98</span></span>
+    </div>
+    <div class="start-items">
+      <div class="start-item start-launch" data-app="ie">
+        <img src="assets/icon-internet-explorer.png" alt="">
+        Internet Explorer
+      </div>
+      <div class="start-item start-launch" data-app="notepad">
+        <img src="assets/icon-notepad.png" alt="">
+        Notepad
+      </div>
+      <div class="start-item">
+        <img src="assets/icon-minesweeper.png" alt="">
+        Programs
+        <span class="arrow">▶</span>
+        <div class="start-submenu">
+          <div class="start-item start-launch" data-app="minesweeper">
+            <img src="assets/icon-minesweeper.png" alt="">
+            Minesweeper
+          </div>
+          <div class="start-item start-launch" data-app="notepad">
+            <img src="assets/icon-notepad.png" alt="">
+            Notepad
+          </div>
+          <div class="start-item start-launch" data-app="my-computer">
+            <img src="assets/icon-my-computer.png" alt="">
+            Windows Explorer
+          </div>
+        </div>
+      </div>
+      <div class="start-separator"></div>
+      <div class="start-item start-launch" data-app="my-computer">
+        <img src="assets/icon-my-computer.png" alt="">
+        My Computer
+      </div>
+      <div class="start-item start-launch" data-app="recycle-bin">
+        <img src="assets/icon-recycle-bin.png" alt="">
+        Recycle Bin
+      </div>
+      <div class="start-separator"></div>
+      <div class="start-item start-launch" data-app="about">
+        <span style="font-size:24px;width:24px;text-align:center">❓</span>
+        Help
+      </div>
+      <div class="start-item start-launch" data-app="about">
+        <span style="font-size:24px;width:24px;text-align:center">🔍</span>
+        Find
+      </div>
+      <div class="start-separator"></div>
+      <div class="start-item start-launch" data-app="shutdown">
+        <span style="font-size:24px;width:24px;text-align:center">⏻</span>
+        Shut Down...
+      </div>
+    </div>
+  </nav>
+
+  <!-- Taskbar -->
+  <footer id="taskbar">
+    <button id="start-btn" class="btn outset">
+      <div class="start-flag">
+        <span class="r"></span><span class="g"></span><span class="b"></span><span class="y"></span>
+        <span class="g"></span><span class="b"></span><span class="y"></span><span class="r"></span>
+        <span class="b"></span><span class="y"></span><span class="r"></span><span class="g"></span>
+        <span class="y"></span><span class="r"></span><span class="g"></span><span class="b"></span>
+      </div>
+      Start
+    </button>
+    <div id="taskbar-apps"></div>
+    <div id="system-tray">
+      <span class="tray-icon" id="tray-volume" title="Volume">🔊</span>
+      <span class="tray-icon" title="Network">🖧</span>
+      <span id="clock">12:00 PM</span>
+    </div>
+  </footer>
+
+  <script src="js/sounds.js"></script>
+  <script src="js/windows.js"></script>
+  <script src="js/apps.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

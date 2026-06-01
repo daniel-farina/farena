@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows 98</title>
+<link rel="icon" href="icons/computer.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== BIOS / BOOT ===================== -->
+<div id="bios" class="screen">
+  <div class="bios-inner">
+    <div class="bios-logo">
+      <div class="energy-star"></div>
+      <div class="bios-brand">
+        <div class="big">Award Modular BIOS v4.51PG</div>
+        <div>Copyright (C) 1984-98, Award Software, Inc.</div>
+      </div>
+    </div>
+    <div class="bios-body">
+      <div>SiS 5598 (Pinakaia) System</div>
+      <div id="bios-mem">Memory Test : </div>
+      <div class="bios-spacer"></div>
+      <div>Detecting IDE Primary Master   ... QUANTUM FIREBALL 4.3GB</div>
+      <div>Detecting IDE Primary Slave    ... CD-ROM 48X</div>
+      <div class="bios-spacer"></div>
+      <div class="blink">Press DEL to enter SETUP</div>
+      <div class="bios-bottom">05/30/2026-SiS-5598-2A5IIPA9C-00</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== WINDOWS SPLASH ===================== -->
+<div id="splash" class="screen hidden">
+  <div class="splash-art">
+    <div class="splash-clouds"></div>
+    <div class="splash-content">
+      <div class="win-logo big-logo">
+        <span class="flag red"></span><span class="flag green"></span>
+        <span class="flag blue"></span><span class="flag yellow"></span>
+      </div>
+      <div class="splash-text">
+        <div class="splash-micro">Microsoft</div>
+        <div class="splash-win">Windows<span class="reg">&reg;</span>98</div>
+      </div>
+    </div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    <div class="splash-foot">Copyright &copy; 1981-1998 Microsoft Corporation</div>
+  </div>
+</div>
+
+<!-- ===================== DESKTOP ===================== -->
+<div id="desktop" class="screen hidden">
+
+  <div id="icons" class="desktop-icons"></div>
+
+  <!-- Windows get injected here -->
+  <div id="windows"></div>
+
+  <!-- Start menu -->
+  <div id="startmenu" class="startmenu hidden">
+    <div class="startmenu-side"><span>Windows<b>98</b></span></div>
+    <div class="startmenu-items">
+      <div class="sm-item" data-sub="programs"><img class="sm-ico" src="icons/programs.svg"><span>Programs</span><span class="sm-arrow">&#9658;</span></div>
+      <div class="sm-item" data-app="documents"><img class="sm-ico" src="icons/folder.svg"><span>Documents</span></div>
+      <div class="sm-item"><img class="sm-ico" src="icons/settings.svg"><span>Settings</span><span class="sm-arrow">&#9658;</span></div>
+      <div class="sm-item" data-app="ie"><img class="sm-ico" src="icons/find.svg"><span>Find</span><span class="sm-arrow">&#9658;</span></div>
+      <div class="sm-item"><img class="sm-ico" src="icons/help.svg"><span>Help</span></div>
+      <div class="sm-item"><img class="sm-ico" src="icons/run.svg"><span>Run...</span></div>
+      <div class="sm-sep"></div>
+      <div class="sm-item" id="sm-shutdown"><img class="sm-ico" src="icons/shutdown.svg"><span>Sh<u>u</u>t Down...</span></div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <div id="taskbar" class="taskbar">
+    <button id="startbtn" class="start-btn">
+      <span class="win-logo small-logo">
+        <span class="flag red"></span><span class="flag green"></span>
+        <span class="flag blue"></span><span class="flag yellow"></span>
+      </span>
+      <b>Start</b>
+    </button>
+    <div class="quick-launch">
+      <img src="icons/ie.svg" data-app="ie" title="Internet Explorer">
+      <img src="icons/notepad.svg" data-app="notepad" title="Notepad">
+    </div>
+    <div id="tasks" class="task-buttons"></div>
+    <div class="tray">
+      <img src="icons/sound.svg" id="tray-sound" title="Volume">
+      <span id="clock">12:00 PM</span>
+    </div>
+  </div>
+</div>
+
+<!-- Shutdown overlay -->
+<div id="shutdown-screen" class="screen hidden">
+  <div class="shutdown-msg">It&rsquo;s now safe to turn off<br>your computer.</div>
+</div>
+
+<script src="sound.js"></script>
+<script src="apps.js"></script>
+<script src="os.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Windows 98 — Showcase</title>
+<style>
+  body{background:#008080;font-family:Tahoma,sans-serif;color:#fff;margin:0;padding:24px;}
+  h1{font-size:22px;} p{max-width:760px;line-height:1.5;}
+  .grid{display:flex;flex-direction:column;gap:22px;margin-top:18px;}
+  figure{background:#c0c0c0;color:#000;margin:0;border:2px solid;border-color:#fff #000 #000 #fff;padding:6px;max-width:1040px;}
+  figcaption{font-weight:bold;padding:4px 2px;}
+  img{display:block;width:100%;height:auto;border:2px solid;border-color:#808080 #fff #fff #808080;}
+  a{color:#ffd400;}
+  .open{display:inline-block;background:#c0c0c0;color:#000;text-decoration:none;padding:6px 14px;margin:8px 0;border:2px solid;border-color:#fff #000 #000 #fff;font-weight:bold;}
+</style></head><body>
+<h1>🖥️ Windows 98 — HTML clone</h1>
+<p>A faithful, fully interactive Windows 98 desktop built with plain HTML/CSS/JS.
+All audio (startup chime, clicks, dings, Minesweeper explosion) is synthesized live with the Web Audio API — no media files.
+Below is the automated showcase: after the OS boots, each application is opened one at a time, ~2 seconds apart.</p>
+<a class="open" href="index.html">▶ Launch the live desktop</a>
+<div class="grid" id="g"></div>
+<script>
+const shots=[
+ ["01-bios.png","1. BIOS / power-on self test"],
+ ["02-splash.png","2. Windows 98 boot splash (with startup sound)"],
+ ["03-desktop.png","3. Desktop loaded — icons + taskbar"],
+ ["04-startmenu.png","4. Start menu"],
+ ["05-app-notepad.png","5. Notepad"],
+ ["06-app-paint.png","6. Paint (drawable canvas)"],
+ ["07-app-calc.png","7. Calculator (working)"],
+ ["08-app-mines.png","8. Minesweeper (playable)"],
+ ["09-app-mycomputer.png","9. My Computer"],
+ ["10-app-ie.png","10. Internet Explorer"],
+ ["11-app-media.png","11. Windows Media Player (animated visualizer + tune)"],
+ ["12-app-recycle.png","12. Recycle Bin"],
+ ["13-app-documents.png","13. My Documents"],
+ ["14-all-open.png","14. All applications open & cascaded"],
+ ["15-minesweeper-played.png","15. Minesweeper after a few clicks"],
+ ["16-shutdown-dialog.png","16. Shut Down dialog"],
+];
+document.getElementById('g').innerHTML=shots.map(([f,c])=>
+ `<figure><figcaption>${c}</figcaption><img src="shots/${f}" loading="lazy"></figure>`).join('');
+</script>
+</body></html>

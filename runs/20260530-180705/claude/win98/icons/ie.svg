@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+    <circle cx="24" cy="24" r="17" fill="#1f7fd4"/>
+    <ellipse cx="24" cy="24" rx="17" ry="7" fill="none" stroke="#ffd400" stroke-width="3"/>
+    <path d="M9 20 q15 -10 30 0" fill="none" stroke="#ffd400" stroke-width="3"/>
+    <text x="24" y="31" font-size="16" text-anchor="middle" fill="#fff" font-family="Georgia" font-style="italic" font-weight="bold">e</text></svg>

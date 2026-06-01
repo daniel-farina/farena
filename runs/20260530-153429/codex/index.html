@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retro98 Desktop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="boot" class="boot" aria-live="polite">
+      <div class="boot-box">
+        <div class="boot-logo" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <h1>Retro98</h1>
+        <p>Starting up...</p>
+        <div class="progress"><i></i></div>
+      </div>
+    </div>
+
+    <main id="desktop" class="desktop" aria-label="Retro desktop">
+      <div class="wallpaper-grid" aria-hidden="true"></div>
+
+      <section class="desktop-icons" aria-label="Desktop icons">
+        <button class="desktop-icon" data-open="computer">
+          <span class="icon computer"></span>
+          <span>My Computer</span>
+        </button>
+        <button class="desktop-icon" data-open="notepad">
+          <span class="icon note"></span>
+          <span>Notepad</span>
+        </button>
+        <button class="desktop-icon" data-open="paint">
+          <span class="icon paint"></span>
+          <span>Paint</span>
+        </button>
+        <button class="desktop-icon" data-open="mines">
+          <span class="icon mines"></span>
+          <span>Mines</span>
+        </button>
+        <button class="desktop-icon" data-open="internet">
+          <span class="icon internet"></span>
+          <span>The Internet</span>
+        </button>
+        <button class="desktop-icon" data-open="media">
+          <span class="icon media"></span>
+          <span>Media Player</span>
+        </button>
+        <button class="desktop-icon" data-open="trash">
+          <span class="icon trash"></span>
+          <span>Recycle Bin</span>
+        </button>
+      </section>
+
+      <div id="windows" class="windows"></div>
+
+      <nav id="start-menu" class="start-menu" aria-label="Start menu" hidden>
+        <div class="start-rail">Retro98</div>
+        <div class="start-items">
+          <button data-open="computer"><span class="mini computer"></span>Programs</button>
+          <button data-open="notepad"><span class="mini note"></span>Documents</button>
+          <button data-open="paint"><span class="mini paint"></span>Paint</button>
+          <button data-open="mines"><span class="mini mines"></span>Games</button>
+          <button data-open="media"><span class="mini media"></span>Entertainment</button>
+          <hr />
+          <button id="shutdown"><span class="mini power"></span>Shut Down...</button>
+        </div>
+      </nav>
+
+      <div id="shutdown-dialog" class="modal" hidden>
+        <div class="dialog win98-panel">
+          <div class="titlebar">
+            <span>Shut Down Retro98</span>
+            <button class="title-btn" data-dialog-close aria-label="Close">x</button>
+          </div>
+          <div class="dialog-body">
+            <span class="big-icon power"></span>
+            <div>
+              <p>What do you want the computer to do?</p>
+              <label><input type="radio" name="power" checked /> Stand by</label>
+              <label><input type="radio" name="power" /> Restart</label>
+              <label><input type="radio" name="power" /> Shut down</label>
+            </div>
+          </div>
+          <div class="dialog-actions">
+            <button data-dialog-close>OK</button>
+            <button data-dialog-close>Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="taskbar">
+        <button id="start" class="start-button" aria-expanded="false">
+          <span class="start-flag" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          Start
+        </button>
+        <div id="task-buttons" class="task-buttons" aria-label="Open windows"></div>
+        <div class="tray">
+          <button id="sound-toggle" title="Sound on" aria-label="Toggle sound">♪</button>
+          <span class="tray-led"></span>
+          <time id="clock">00:00 PM</time>
+        </div>
+      </footer>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

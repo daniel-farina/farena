@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Windows 98 HTML Clone</title>
+  <style>
+    :root {
+      --teal: #008080;
+      --face: #c0c0c0;
+      --light: #ffffff;
+      --shadow: #808080;
+      --dark: #000000;
+      --blue: #000080;
+      --blue2: #1084d0;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      font-family: "MS Sans Serif", Tahoma, Verdana, sans-serif;
+      font-size: 12px;
+      color: #000;
+      background: #000;
+      user-select: none;
+    }
+
+    button, input, textarea {
+      font-family: inherit;
+      font-size: 12px;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: #000;
+      color: #fff;
+      z-index: 1000;
+    }
+
+    .boot-card {
+      width: min(560px, 88vw);
+      aspect-ratio: 4 / 3;
+      background:
+        linear-gradient(90deg, transparent 0 35%, rgba(255,255,255,.08) 35% 37%, transparent 37%),
+        linear-gradient(#d6e8ff 0 20%, #ffffff 20% 55%, #f2f2f2 55% 100%);
+      border: 2px solid #fff;
+      color: #111;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      box-shadow: 0 0 0 1px #444, 0 18px 80px rgba(0,0,0,.55);
+    }
+
+    .boot-logo {
+      display: grid;
+      place-content: center;
+      text-align: center;
+      gap: 18px;
+    }
+
+    .flag {
+      width: 108px;
+      height: 78px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      transform: skewY(-8deg);
+      margin: 0 auto;
+      filter: drop-shadow(8px 8px 0 rgba(0,0,0,.2));
+    }
+
+    .flag span:nth-child(1) { background: #f05022; }
+    .flag span:nth-child(2) { background: #7fba00; }
+    .flag span:nth-child(3) { background: #00a4ef; }
+    .flag span:nth-child(4) { background: #ffb900; }
+
+    .boot-title {
+      font-family: Georgia, serif;
+      font-size: clamp(36px, 8vw, 70px);
+      line-height: .85;
+    }
+
+    .boot-title small {
+      display: block;
+      margin-top: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 19px;
+      letter-spacing: 7px;
+    }
+
+    .boot-bar-wrap {
+      padding: 0 44px 38px;
+    }
+
+    .boot-bar {
+      height: 18px;
+      border: 2px inset #ddd;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .boot-progress {
+      width: 28%;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, #000080 0 12px, #1084d0 12px 24px);
+      animation: boot 1s steps(8) infinite;
+    }
+
+    @keyframes boot {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(380%); }
+    }
+
+    .desktop {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.09), transparent 18%),
+        radial-gradient(circle at 82% 30%, rgba(255,255,255,.07), transparent 16%),
+        linear-gradient(135deg, #007575, var(--teal));
+      display: none;
+      overflow: hidden;
+    }
+
+    .desktop.ready { display: block; }
+
+    .icons {
+      position: absolute;
+      inset: 10px 0 32px 8px;
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(7, 76px);
+      grid-auto-columns: 90px;
+      align-content: start;
+      justify-content: start;
+      gap: 5px 4px;
+    }
+
+    .icon {
+      width: 82px;
+      height: 72px;
+      padding: 3px 2px;
+      color: #fff;
+      text-align: center;
+      text-shadow: 1px 1px #000;
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: default;
+    }
+
+    .icon:focus, .icon.selected {
+      border: 1px dotted #fff;
+      outline: none;
+      background: rgba(0,0,128,.35);
+    }
+
+    .glyph {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 4px;
+      position: relative;
+      image-rendering: pixelated;
+    }
+
+    .glyph.computer {
+      border: 3px solid #d8d8d8;
+      background: linear-gradient(#2b70b8 0 70%, #111 70%);
+      box-shadow: inset -2px -2px #777, inset 2px 2px #fff, 0 6px 0 -2px #aaa;
+    }
+
+    .glyph.folder {
+      background: #ffd35a;
+      border: 2px outset #ffe999;
+      clip-path: polygon(0 25%, 36% 25%, 45% 8%, 100% 8%, 100% 100%, 0 100%);
+    }
+
+    .glyph.notepad {
+      background: repeating-linear-gradient(#fff 0 6px, #bad4ff 6px 7px);
+      border: 2px solid #183d8c;
+      box-shadow: 5px 3px 0 #777;
+    }
+
+    .glyph.paint {
+      border-radius: 50%;
+      background: conic-gradient(#f00, #ff0, #0a0, #08f, #f0f, #f00);
+      border: 2px solid #eee;
+      box-shadow: inset -3px -3px rgba(0,0,0,.25);
+    }
+
+    .glyph.calc {
+      background: #e6e6e6;
+      border: 2px outset #fff;
+      box-shadow: inset 0 8px #9fb7a5;
+    }
+
+    .glyph.web {
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, #73b7ff 28%, #0b4bb3 72%);
+      border: 2px solid #f6d36b;
+    }
+
+    .glyph.game {
+      background: #bbb;
+      border: 2px outset #fff;
+    }
+
+    .glyph.game::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      background: #f00;
+      box-shadow: 8px 0 #000, 0 8px #000, 8px 8px #f00;
+    }
+
+    .glyph.media {
+      background: #111;
+      border: 2px outset #ddd;
+    }
+
+    .glyph.media::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 7px;
+      border-left: 14px solid #20d020;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+    }
+
+    .glyph.bin {
+      background: linear-gradient(90deg, transparent 0 18%, #dfefff 18% 82%, transparent 82%);
+      border-bottom: 24px solid rgba(223,239,255,.95);
+    }
+
+    .window {
+      position: absolute;
+      min-width: 250px;
+      min-height: 160px;
+      background: var(--face);
+      border: 2px outset #fff;
+      box-shadow: 2px 2px 0 rgba(0,0,0,.45);
+      display: none;
+      z-index: 20;
+    }
+
+    .window.open { display: flex; flex-direction: column; }
+    .window.active { z-index: 40; }
+
+    .titlebar {
+      height: 22px;
+      padding: 2px 3px 2px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      background: linear-gradient(90deg, var(--blue), var(--blue2));
+      font-weight: 700;
+      cursor: move;
+    }
+
+    .titlebar.inactive {
+      background: linear-gradient(90deg, #777, #bbb);
+    }
+
+    .controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .control, .winbtn, .start-button, .task-button {
+      border: 2px outset #fff;
+      background: var(--face);
+      color: #000;
+      min-height: 20px;
+    }
+
+    .control {
+      width: 18px;
+      height: 16px;
+      line-height: 10px;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .control:active, .winbtn:active, .start-button.active, .start-button:active, .task-button.active {
+      border-style: inset;
+    }
+
+    .menubar {
+      display: flex;
+      gap: 18px;
+      padding: 3px 7px;
+      border-bottom: 1px solid #999;
+    }
+
+    .window-body {
+      flex: 1;
+      margin: 2px;
+      border: 2px inset #fff;
+      background: #fff;
+      overflow: auto;
+      position: relative;
+    }
+
+    .statusbar {
+      padding: 2px 5px;
+      border-top: 1px solid #888;
+      display: flex;
+      gap: 4px;
+    }
+
+    .statusbar span {
+      border: 1px inset #fff;
+      padding: 2px 6px;
+      min-width: 90px;
+    }
+
+    .explorer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .file-item {
+      text-align: center;
+    }
+
+    textarea.notepad {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      resize: none;
+      padding: 8px;
+      outline: none;
+      background: #fff;
+    }
+
+    .paint-canvas {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.06) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,.06) 1px, transparent 1px),
+        #fff;
+      background-size: 16px 16px;
+    }
+
+    .paint-stroke {
+      position: absolute;
+      border-radius: 50%;
+      border: 8px solid transparent;
+      pointer-events: none;
+    }
+
+    .calc-shell {
+      width: 202px;
+      margin: 12px auto;
+      display: grid;
+      gap: 6px;
+    }
+
+    .calc-screen {
+      height: 32px;
+      border: 2px inset #fff;
+      background: #eaf2e5;
+      text-align: right;
+      padding: 7px;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+    }
+
+    .calc-keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .winbtn {
+      padding: 4px 8px;
+      min-width: 36px;
+    }
+
+    .web-page {
+      height: 100%;
+      background: #fff;
+    }
+
+    .address {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--face);
+      border-bottom: 1px solid #999;
+    }
+
+    .address input {
+      flex: 1;
+      border: 2px inset #fff;
+      height: 22px;
+      padding: 2px 5px;
+    }
+
+    .browser-content {
+      padding: 16px;
+      line-height: 1.4;
+    }
+
+    .browser-content h1 {
+      margin: 0 0 8px;
+      color: #000080;
+      font-size: 23px;
+    }
+
+    .mines {
+      display: grid;
+      grid-template-columns: repeat(8, 26px);
+      gap: 2px;
+      margin: 16px auto;
+      width: max-content;
+      padding: 8px;
+      background: var(--face);
+      border: 2px inset #fff;
+    }
+
+    .mine-cell {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border: 2px outset #fff;
+      background: var(--face);
+      font-weight: 700;
+    }
+
+    .mine-cell.opened {
+      border: 1px solid #999;
+      background: #d5d5d5;
+      color: #0000ff;
+    }
+
+    .player {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      background: #111;
+      color: #0f0;
+    }
+
+    .visualizer {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 6px;
+      padding: 24px;
+      min-height: 140px;
+    }
+
+    .bar {
+      width: 14px;
+      background: linear-gradient(#0f0, #fc0, #f00);
+      animation: vu 1s infinite steps(4);
+    }
+
+    .bar:nth-child(2n) { animation-duration: .7s; }
+    .bar:nth-child(3n) { animation-duration: 1.3s; }
+
+    @keyframes vu {
+      0%, 100% { height: 24px; }
+      50% { height: 108px; }
+    }
+
+    .player-controls {
+      background: var(--face);
+      color: #000;
+      padding: 8px;
+      border-top: 2px outset #fff;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .bin-note {
+      padding: 18px;
+      line-height: 1.5;
+    }
+
+    .taskbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 32px;
+      background: var(--face);
+      border-top: 2px outset #fff;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      gap: 4px;
+      z-index: 100;
+    }
+
+    .start-button {
+      height: 26px;
+      min-width: 72px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      font-weight: 700;
+    }
+
+    .start-flag {
+      width: 18px;
+      height: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      transform: skewY(-8deg);
+    }
+
+    .start-flag span:nth-child(1) { background: #f00; }
+    .start-flag span:nth-child(2) { background: #0b0; }
+    .start-flag span:nth-child(3) { background: #08f; }
+    .start-flag span:nth-child(4) { background: #fc0; }
+
+    .tasks {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .task-button {
+      height: 24px;
+      min-width: 116px;
+      max-width: 190px;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 2px 8px;
+    }
+
+    .tray {
+      height: 24px;
+      min-width: 78px;
+      border: 2px inset #fff;
+      display: grid;
+      place-items: center;
+      padding: 0 8px;
+    }
+
+    .start-menu {
+      position: absolute;
+      left: 2px;
+      bottom: 31px;
+      width: 230px;
+      background: var(--face);
+      border: 2px outset #fff;
+      display: none;
+      z-index: 110;
+      box-shadow: 3px 3px rgba(0,0,0,.35);
+    }
+
+    .start-menu.open { display: grid; grid-template-columns: 34px 1fr; }
+
+    .start-sidebar {
+      color: #fff;
+      background: linear-gradient(#000080, #1084d0);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 22px;
+      font-weight: 700;
+      padding: 8px 3px;
+      letter-spacing: 1px;
+    }
+
+    .start-items {
+      padding: 4px;
+    }
+
+    .start-item {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 6px;
+    }
+
+    .start-item:hover {
+      background: #000080;
+      color: #fff;
+    }
+
+    .start-sep {
+      border-top: 1px solid #888;
+      border-bottom: 1px solid #fff;
+      margin: 4px 0;
+    }
+
+    .cursor {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid #fff;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      filter: drop-shadow(1px 1px 0 #000);
+      z-index: 999;
+      pointer-events: none;
+      transform: rotate(16deg);
+      transition: left .45s ease, top .45s ease, transform .12s ease;
+    }
+
+    .cursor.clicking {
+      transform: rotate(16deg) scale(.86);
+    }
+
+    .toast {
+      position: absolute;
+      right: 12px;
+      bottom: 45px;
+      width: min(340px, calc(100vw - 24px));
+      background: #ffffe1;
+      border: 1px solid #000;
+      box-shadow: 2px 2px rgba(0,0,0,.35);
+      padding: 10px;
+      display: none;
+      z-index: 120;
+      line-height: 1.35;
+    }
+
+    .toast.show { display: block; }
+
+    .shutdown {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0,0,0,.28);
+      z-index: 500;
+    }
+
+    .shutdown.open { display: grid; }
+
+    .dialog {
+      width: min(360px, 90vw);
+      background: var(--face);
+      border: 2px outset #fff;
+      box-shadow: 3px 3px rgba(0,0,0,.35);
+    }
+
+    .dialog-body {
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .dialog-actions {
+      padding: 0 18px 16px;
+      text-align: right;
+    }
+
+    @media (max-width: 720px) {
+      .icons {
+        grid-template-rows: repeat(5, 76px);
+        grid-auto-columns: 82px;
+        inset-right: 0;
+      }
+      .window {
+        left: 10px !important;
+        top: 48px !important;
+        width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 92px);
+      }
+      .task-button { min-width: 84px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen" id="boot">
+    <div class="boot-card">
+      <div class="boot-logo">
+        <div class="flag" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div class="boot-title">Windows<small>98 HTML</small></div>
+      </div>
+      <div class="boot-bar-wrap">
+        <div class="boot-bar"><div class="boot-progress"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="desktop" id="desktop" aria-label="Windows 98 HTML desktop">
+    <section class="icons" id="icons"></section>
+    <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+    <div class="start-menu" id="startMenu">
+      <div class="start-sidebar">Windows 98</div>
+      <div class="start-items">
+        <div class="start-item" data-app="notepad"><span class="glyph notepad"></span> Programs</div>
+        <div class="start-item" data-app="web"><span class="glyph web"></span> Internet</div>
+        <div class="start-item" data-app="computer"><span class="glyph computer"></span> My Computer</div>
+        <div class="start-sep"></div>
+        <div class="start-item" id="shutdownItem"><span class="glyph media"></span> Shut Down...</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">
+      <strong>Automated showcase is running.</strong><br>
+      The pointer will click each desktop application every 2 seconds after startup.
+    </div>
+
+    <div class="shutdown" id="shutdown">
+      <div class="dialog">
+        <div class="titlebar"><span>Shut Down Windows</span><button class="control" data-close-dialog>x</button></div>
+        <div class="dialog-body">
+          <div class="glyph computer"></div>
+          <div>What do you want the computer to do?</div>
+        </div>
+        <div class="dialog-actions">
+          <button class="winbtn" data-close-dialog>Cancel</button>
+          <button class="winbtn">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="taskbar">
+      <button class="start-button" id="startButton">
+        <span class="start-flag"><span></span><span></span><span></span><span></span></span>
+        Start
+      </button>
+      <div class="tasks" id="tasks"></div>
+      <div class="tray" id="clock">12:00 PM</div>
+    </div>
+  </main>
+
+  <template id="windowTemplate">
+    <article class="window">
+      <div class="titlebar">
+        <span class="window-title"></span>
+        <div class="controls">
+          <button class="control" data-minimize>_</button>
+          <button class="control">[]</button>
+          <button class="control" data-close>x</button>
+        </div>
+      </div>
+      <nav class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></nav>
+      <div class="window-body"></div>
+      <footer class="statusbar"><span>Ready</span><span class="status-extra"></span></footer>
+    </article>
+  </template>
+
+  <script>
+    const apps = [
+      { id: "computer", title: "My Computer", icon: "computer", x: 138, y: 72, w: 480, h: 330 },
+      { id: "docs", title: "My Documents", icon: "folder", x: 190, y: 106, w: 430, h: 300 },
+      { id: "notepad", title: "Notepad", icon: "notepad", x: 246, y: 64, w: 510, h: 350 },
+      { id: "paint", title: "Paint", icon: "paint", x: 312, y: 92, w: 540, h: 360 },
+      { id: "calculator", title: "Calculator", icon: "calc", x: 382, y: 126, w: 260, h: 280 },
+      { id: "web", title: "Internet Explorer", icon: "web", x: 124, y: 130, w: 570, h: 360 },
+      { id: "minesweeper", title: "Minesweeper", icon: "game", x: 436, y: 78, w: 300, h: 330 },
+      { id: "media", title: "Windows Media Player", icon: "media", x: 220, y: 118, w: 470, h: 330 },
+      { id: "recycle", title: "Recycle Bin", icon: "bin", x: 488, y: 142, w: 360, h: 250 }
+    ];
+
+    const boot = document.getElementById("boot");
+    const desktop = document.getElementById("desktop");
+    const icons = document.getElementById("icons");
+    const tasks = document.getElementById("tasks");
+    const startButton = document.getElementById("startButton");
+    const startMenu = document.getElementById("startMenu");
+    const shutdown = document.getElementById("shutdown");
+    const cursor = document.getElementById("cursor");
+    const toast = document.getElementById("toast");
+    const clock = document.getElementById("clock");
+    const windows = new Map();
+    let topZ = 40;
+    let audioCtx;
+
+    function appBody(app) {
+      if (app.id === "computer") {
+        return `<div class="explorer-grid">
+          ${["3.5 Floppy (A:)", "Local Disk (C:)", "CD-ROM (D:)", "Control Panel", "Printers", "Dial-Up Networking"].map((name, i) => `
+            <div class="file-item"><div class="glyph ${i < 3 ? "computer" : "folder"}"></div>${name}</div>`).join("")}
+        </div>`;
+      }
+      if (app.id === "docs") {
+        return `<div class="explorer-grid">
+          ${["Resume.doc", "Vacation.bmp", "Budget.xls", "Readme.txt", "Setup.exe", "Web Links"].map((name, i) => `
+            <div class="file-item"><div class="glyph ${i === 1 ? "paint" : i === 3 ? "notepad" : "folder"}"></div>${name}</div>`).join("")}
+        </div>`;
+      }
+      if (app.id === "notepad") {
+        return `<textarea class="notepad" spellcheck="false">Windows 98 HTML Clone
+
+This desktop boots, plays procedural sounds, and automatically opens each application.
+
+Click icons manually after the showcase to keep exploring.</textarea>`;
+      }
+      if (app.id === "paint") {
+        return `<div class="paint-canvas">
+          <div class="paint-stroke" style="left:70px;top:54px;width:260px;height:130px;border-top-color:#f00;border-left-color:#00f;transform:rotate(-9deg)"></div>
+          <div class="paint-stroke" style="left:190px;top:118px;width:220px;height:92px;border-bottom-color:#0a0;border-right-color:#fc0;transform:rotate(7deg)"></div>
+        </div>`;
+      }
+      if (app.id === "calculator") {
+        return `<div class="calc-shell">
+          <div class="calc-screen">98.00</div>
+          <div class="calc-keys">${["7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"].map(k => `<button class="winbtn">${k}</button>`).join("")}</div>
+        </div>`;
+      }
+      if (app.id === "web") {
+        return `<div class="web-page">
+          <div class="address"><strong>Address</strong><input value="http://home.local/windows98" readonly><button class="winbtn">Go</button></div>
+          <div class="browser-content">
+            <h1>Welcome to the Internet</h1>
+            <p>This faux Internet Explorer page is offline, fast, and full of beveled nostalgia.</p>
+            <p><a>Windows Update</a> | <a>MSN</a> | <a>HTML Channel Guide</a></p>
+            <marquee behavior="alternate">Best viewed at 800 x 600</marquee>
+          </div>
+        </div>`;
+      }
+      if (app.id === "minesweeper") {
+        const cells = Array.from({ length: 64 }, (_, i) => {
+          const open = [9, 10, 11, 18, 20, 27, 28, 29, 36].includes(i);
+          const text = open ? ([10, 20, 28].includes(i) ? "2" : "1") : "";
+          return `<div class="mine-cell ${open ? "opened" : ""}">${text}</div>`;
+        }).join("");
+        return `<div class="mines">${cells}</div>`;
+      }
+      if (app.id === "media") {
+        return `<div class="player">
+          <div class="visualizer">${Array.from({ length: 16 }, (_, i) => `<div class="bar" style="animation-delay:${i * -0.08}s"></div>`).join("")}</div>
+          <div class="player-controls"><button class="winbtn">&gt;</button><button class="winbtn">Stop</button><span>track01.mid</span></div>
+        </div>`;
+      }
+      return `<div class="bin-note"><div class="glyph bin"></div><p>The Recycle Bin is empty.</p><p>No deleted files were harmed in this demonstration.</p></div>`;
+    }
+
+    function glyph(name) {
+      return `<div class="glyph ${name}" aria-hidden="true"></div>`;
+    }
+
+    function createIcons() {
+      icons.innerHTML = apps.map(app => `
+        <button class="icon" data-app="${app.id}" id="icon-${app.id}">
+          ${glyph(app.icon)}
+          <span>${app.title}</span>
+        </button>
+      `).join("");
+    }
+
+    function createWindows() {
+      const template = document.getElementById("windowTemplate");
+      apps.forEach(app => {
+        const node = template.content.firstElementChild.cloneNode(true);
+        node.id = `window-${app.id}`;
+        node.dataset.app = app.id;
+        node.style.left = `${app.x}px`;
+        node.style.top = `${app.y}px`;
+        node.style.width = `${app.w}px`;
+        node.style.height = `${app.h}px`;
+        node.querySelector(".window-title").textContent = app.title;
+        node.querySelector(".window-body").innerHTML = appBody(app);
+        node.querySelector(".status-extra").textContent = app.title;
+        desktop.appendChild(node);
+        windows.set(app.id, node);
+      });
+    }
+
+    function tone(freq, duration, type = "square", gain = 0.045, delay = 0) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime + delay;
+      const oscillator = audioCtx.createOscillator();
+      const volume = audioCtx.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(freq, now);
+      volume.gain.setValueAtTime(0.0001, now);
+      volume.gain.exponentialRampToValueAtTime(gain, now + 0.02);
+      volume.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      oscillator.connect(volume).connect(audioCtx.destination);
+      oscillator.start(now);
+      oscillator.stop(now + duration + 0.03);
+    }
+
+    function sound(kind) {
+      try {
+        audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        if (kind === "boot") {
+          [392, 523, 659, 784].forEach((f, i) => tone(f, .18, "triangle", .035, i * .16));
+        } else if (kind === "click") {
+          tone(900, .045, "square", .035);
+          tone(550, .06, "square", .025, .045);
+        } else if (kind === "open") {
+          tone(660, .08, "triangle", .03);
+          tone(880, .11, "triangle", .03, .07);
+        } else if (kind === "close") {
+          tone(420, .08, "sawtooth", .025);
+        } else if (kind === "error") {
+          tone(220, .16, "square", .05);
+          tone(165, .16, "square", .05, .18);
+        }
+      } catch (err) {
+        // Browsers may block audio until the first real user gesture.
+      }
+    }
+
+    function setActive(appId) {
+      windows.forEach(win => {
+        win.classList.remove("active");
+        win.querySelector(".titlebar").classList.add("inactive");
+      });
+      const win = windows.get(appId);
+      if (!win) return;
+      win.classList.add("active");
+      win.style.zIndex = ++topZ;
+      win.querySelector(".titlebar").classList.remove("inactive");
+      tasks.querySelectorAll(".task-button").forEach(btn => btn.classList.toggle("active", btn.dataset.app === appId));
+    }
+
+    function openApp(appId) {
+      const app = apps.find(item => item.id === appId);
+      const win = windows.get(appId);
+      if (!app || !win) return;
+      document.querySelectorAll(".icon").forEach(icon => icon.classList.toggle("selected", icon.dataset.app === appId));
+      win.classList.add("open");
+      if (!tasks.querySelector(`[data-app="${appId}"]`)) {
+        const btn = document.createElement("button");
+        btn.className = "task-button";
+        btn.dataset.app = appId;
+        btn.textContent = app.title;
+        btn.addEventListener("click", () => {
+          win.classList.add("open");
+          setActive(appId);
+          sound("click");
+        });
+        tasks.appendChild(btn);
+      }
+      setActive(appId);
+      sound("open");
+    }
+
+    function closeApp(appId) {
+      const win = windows.get(appId);
+      win?.classList.remove("open");
+      tasks.querySelector(`[data-app="${appId}"]`)?.remove();
+      sound("close");
+    }
+
+    function bindWindowControls() {
+      desktop.addEventListener("click", event => {
+        const icon = event.target.closest(".icon");
+        const task = event.target.closest(".task-button");
+        const startItem = event.target.closest(".start-item[data-app]");
+        const win = event.target.closest(".window");
+        if (!event.target.closest(".start-menu") && event.target !== startButton) {
+          startMenu.classList.remove("open");
+          startButton.classList.remove("active");
+        }
+        if (icon) {
+          openApp(icon.dataset.app);
+          sound("click");
+        }
+        if (task) {
+          openApp(task.dataset.app);
+          sound("click");
+        }
+        if (startItem) {
+          openApp(startItem.dataset.app);
+          sound("click");
+        }
+        if (win) setActive(win.dataset.app);
+        if (event.target.matches("[data-close]")) closeApp(event.target.closest(".window").dataset.app);
+        if (event.target.matches("[data-minimize]")) event.target.closest(".window").classList.remove("open");
+        if (event.target.id === "shutdownItem") {
+          shutdown.classList.add("open");
+          sound("error");
+        }
+        if (event.target.matches("[data-close-dialog]")) shutdown.classList.remove("open");
+      });
+
+      startButton.addEventListener("click", event => {
+        event.stopPropagation();
+        startMenu.classList.toggle("open");
+        startButton.classList.toggle("active", startMenu.classList.contains("open"));
+        sound("click");
+      });
+
+      windows.forEach(win => {
+        const bar = win.querySelector(".titlebar");
+        let drag = null;
+        bar.addEventListener("pointerdown", event => {
+          if (event.target.closest("button")) return;
+          setActive(win.dataset.app);
+          drag = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            left: win.offsetLeft,
+            top: win.offsetTop
+          };
+          bar.setPointerCapture(event.pointerId);
+        });
+        bar.addEventListener("pointermove", event => {
+          if (!drag) return;
+          const maxLeft = window.innerWidth - 80;
+          const maxTop = window.innerHeight - 64;
+          win.style.left = `${Math.max(0, Math.min(maxLeft, drag.left + event.clientX - drag.startX))}px`;
+          win.style.top = `${Math.max(0, Math.min(maxTop, drag.top + event.clientY - drag.startY))}px`;
+        });
+        bar.addEventListener("pointerup", () => { drag = null; });
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      clock.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function clickPoint(x, y) {
+      cursor.style.left = `${x}px`;
+      cursor.style.top = `${y}px`;
+      setTimeout(() => cursor.classList.add("clicking"), 470);
+      setTimeout(() => cursor.classList.remove("clicking"), 620);
+    }
+
+    function showcase() {
+      toast.classList.add("show");
+      cursor.style.left = "34px";
+      cursor.style.top = "28px";
+      apps.forEach((app, index) => {
+        setTimeout(() => {
+          const icon = document.getElementById(`icon-${app.id}`);
+          const rect = icon.getBoundingClientRect();
+          clickPoint(rect.left + rect.width / 2, rect.top + 24);
+          setTimeout(() => {
+            icon.classList.add("selected");
+            openApp(app.id);
+            sound("click");
+          }, 650);
+        }, index * 2000);
+      });
+      setTimeout(() => {
+        toast.innerHTML = "<strong>Showcase complete.</strong><br>All desktop applications have been opened. You can keep using the clone manually.";
+      }, apps.length * 2000 + 1200);
+    }
+
+    function bootSystem() {
+      createIcons();
+      createWindows();
+      bindWindowControls();
+      updateClock();
+      setInterval(updateClock, 10000);
+      document.addEventListener("pointerdown", () => sound("click"), { once: true });
+      setTimeout(() => {
+        boot.style.display = "none";
+        desktop.classList.add("ready");
+        sound("boot");
+        setTimeout(showcase, 2000);
+      }, 2600);
+    }
+
+    bootSystem();
+  </script>
+</body>
+</html>

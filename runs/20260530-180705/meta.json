@@ -1,0 +1,71 @@
+{
+  "ts": "20260530-180705",
+  "date": "20260530",
+  "prompt": "create a windows 98 clone in html, use any tools you have to create image or any media as needed, try to add sound,do not ask me any quesitons. Do your best. You must click on each application after 2 seconds each and open it to showcase what it looks like after the operating system loads.",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "codex",
+    "grok",
+    "cursor"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "claude-opus-4-8",
+      "ok": true,
+      "wall": 682.9920001029968,
+      "lines": 4456,
+      "bytes": 761612,
+      "lps": 6.524234543491029,
+      "main_html": "win98/index.html",
+      "shot": "claude.png",
+      "clip": "claude.mp4"
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "gpt-5.5",
+      "ok": true,
+      "wall": 262.327999830246,
+      "lines": 1080,
+      "bytes": 31150,
+      "lps": 4.116983321257641,
+      "main_html": "index.html",
+      "shot": "codex.png",
+      "clip": "codex.mp4"
+    },
+    {
+      "model": "grok",
+      "label": "GROK",
+      "color": "#E5E7EB",
+      "model_name": "grok-build",
+      "ok": true,
+      "wall": 0.0,
+      "lines": 1868,
+      "bytes": 101845,
+      "lps": 0,
+      "main_html": "index.html",
+      "shot": "grok.png",
+      "clip": "grok.mp4"
+    },
+    {
+      "model": "cursor",
+      "label": "CURSOR",
+      "color": "#4aa3ff",
+      "model_name": "auto",
+      "ok": true,
+      "wall": 274.01994512509555,
+      "lines": 1122,
+      "bytes": 54880,
+      "lps": 4.094592455625026,
+      "main_html": "win98/index.html",
+      "shot": "cursor.png",
+      "clip": "cursor.mp4"
+    }
+  ],
+  "best": 0.0
+}

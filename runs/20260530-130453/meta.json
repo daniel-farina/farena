@@ -1,0 +1,71 @@
+{
+  "ts": "20260530-130453",
+  "date": "20260530",
+  "prompt": "create a windows 95 clone in html, do not ask me any quesitons. Do your best.",
+  "prompt_is_md": false,
+  "order": [
+    "claude",
+    "codex",
+    "grok",
+    "cursor"
+  ],
+  "cards": [
+    {
+      "model": "claude",
+      "label": "CLAUDE",
+      "color": "#D97757",
+      "model_name": "claude-opus-4-8",
+      "ok": true,
+      "wall": 201.33100008964539,
+      "lines": 1157,
+      "bytes": 44902,
+      "lps": 5.746755340632242,
+      "main_html": "win95.html",
+      "shot": "claude.png",
+      "clip": null
+    },
+    {
+      "model": "codex",
+      "label": "CODEX",
+      "color": "#10A37F",
+      "model_name": "gpt-5.5",
+      "ok": true,
+      "wall": 196.44500017166138,
+      "lines": 986,
+      "bytes": 29016,
+      "lps": 5.019216570227771,
+      "main_html": "index.html",
+      "shot": "codex.png",
+      "clip": null
+    },
+    {
+      "model": "grok",
+      "label": "GROK",
+      "color": "#E5E7EB",
+      "model_name": "grok-build",
+      "ok": true,
+      "wall": 141.40499997138977,
+      "lines": 2834,
+      "bytes": 79078,
+      "lps": 20.041724129793135,
+      "main_html": "index.html",
+      "shot": "grok.png",
+      "clip": null
+    },
+    {
+      "model": "cursor",
+      "label": "CURSOR",
+      "color": "#4aa3ff",
+      "model_name": "auto",
+      "ok": true,
+      "wall": 58.36,
+      "lines": 1710,
+      "bytes": 56724,
+      "lps": 29.303,
+      "main_html": "index.html",
+      "shot": "cursor.png",
+      "clip": null
+    }
+  ],
+  "best": 58.36
+}

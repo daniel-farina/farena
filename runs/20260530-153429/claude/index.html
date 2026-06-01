@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Windows 98</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ BOOT SCREEN ============ -->
+<div id="bios" class="bios-screen">
+  <div class="bios-inner">
+    <div class="energy-star">
+      <div class="es-logo">ENERGY</div>
+      <div class="es-star">★ STAR</div>
+    </div>
+    <pre id="bios-text"></pre>
+  </div>
+</div>
+
+<!-- ============ STARTUP (Win98 splash) ============ -->
+<div id="splash" class="splash-screen hidden">
+  <div class="splash-logo">
+    <div class="splash-flag">
+      <span class="flag-r"></span><span class="flag-g"></span>
+      <span class="flag-b"></span><span class="flag-y"></span>
+    </div>
+    <div class="splash-text">
+      <div class="splash-micro">Microsoft</div>
+      <div class="splash-win">Windows<span class="splash-98">98</span></div>
+    </div>
+  </div>
+  <div class="splash-foot">
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    <div class="splash-copy">Copyright © Microsoft Corporation</div>
+  </div>
+</div>
+
+<!-- ============ DESKTOP ============ -->
+<div id="desktop" class="desktop hidden">
+
+  <div id="icons" class="desktop-icons"></div>
+
+  <!-- selection rubber band -->
+  <div id="rubber" class="rubber-band"></div>
+
+  <!-- Windows get injected here -->
+  <div id="windows"></div>
+
+  <!-- Desktop right-click menu -->
+  <div id="desk-menu" class="context-menu hidden">
+    <div class="ctx-item" data-act="arrange">Arrange Icons</div>
+    <div class="ctx-item" data-act="refresh">Refresh</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item disabled">Paste</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" data-act="new">New &nbsp;&nbsp;▶</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" data-act="props">Properties</div>
+  </div>
+
+  <!-- ============ TASKBAR ============ -->
+  <div id="taskbar" class="taskbar">
+    <button id="start-btn" class="start-button">
+      <span class="start-flag">
+        <i class="f-r"></i><i class="f-g"></i><i class="f-b"></i><i class="f-y"></i>
+      </span>
+      <span class="start-label">Start</span>
+    </button>
+    <div class="quick-launch">
+      <div class="ql-icon" data-app="ie" title="Launch Internet Explorer">🌐</div>
+      <div class="ql-icon" data-app="notepad" title="Notepad">📝</div>
+    </div>
+    <div class="task-divider"></div>
+    <div id="task-buttons" class="task-buttons"></div>
+    <div id="tray" class="system-tray">
+      <span class="tray-icon" id="tray-vol" title="Volume">🔊</span>
+      <span class="tray-icon" title="Connected">📶</span>
+      <span id="clock" class="tray-clock">12:00 PM</span>
+    </div>
+  </div>
+
+  <!-- ============ START MENU ============ -->
+  <div id="start-menu" class="start-menu hidden">
+    <div class="start-side">
+      <span class="start-side-text">Windows<b>98</b></span>
+    </div>
+    <div class="start-list">
+      <div class="sm-item" data-sub="programs">
+        <span class="sm-ico">📁</span><span class="sm-txt">Programs</span><span class="sm-arr">▶</span>
+      </div>
+      <div class="sm-item" data-sub="documents">
+        <span class="sm-ico">📄</span><span class="sm-txt">Documents</span><span class="sm-arr">▶</span>
+      </div>
+      <div class="sm-item" data-sub="settings">
+        <span class="sm-ico">⚙️</span><span class="sm-txt">Settings</span><span class="sm-arr">▶</span>
+      </div>
+      <div class="sm-item" data-app="find">
+        <span class="sm-ico">🔍</span><span class="sm-txt">Find</span><span class="sm-arr">▶</span>
+      </div>
+      <div class="sm-item" data-app="help">
+        <span class="sm-ico">❓</span><span class="sm-txt">Help</span>
+      </div>
+      <div class="sm-item" data-app="run">
+        <span class="sm-ico">▶️</span><span class="sm-txt">Run...</span>
+      </div>
+      <div class="sm-sep"></div>
+      <div class="sm-item" data-app="shutdown">
+        <span class="sm-ico">🔌</span><span class="sm-txt">Sh<u>u</u>t Down...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Programs submenu -->
+  <div id="programs-menu" class="sub-menu hidden">
+    <div class="sm-item" data-app="notepad"><span class="sm-ico">📝</span><span class="sm-txt">Notepad</span></div>
+    <div class="sm-item" data-app="paint"><span class="sm-ico">🎨</span><span class="sm-txt">Paint</span></div>
+    <div class="sm-item" data-app="minesweeper"><span class="sm-ico">💣</span><span class="sm-txt">Minesweeper</span></div>
+    <div class="sm-item" data-app="calc"><span class="sm-ico">🧮</span><span class="sm-txt">Calculator</span></div>
+    <div class="sm-item" data-app="ie"><span class="sm-ico">🌐</span><span class="sm-txt">Internet Explorer</span></div>
+    <div class="sm-item" data-app="media"><span class="sm-ico">🎵</span><span class="sm-txt">Media Player</span></div>
+    <div class="sm-item" data-app="mycomputer"><span class="sm-ico">💻</span><span class="sm-txt">My Computer</span></div>
+    <div class="sm-item" data-app="cmd"><span class="sm-ico">⬛</span><span class="sm-txt">MS-DOS Prompt</span></div>
+  </div>
+
+  <!-- volume slider -->
+  <div id="vol-panel" class="vol-panel hidden">
+    <div class="vol-title">Volume</div>
+    <input type="range" id="vol-slider" min="0" max="100" value="70" orient="vertical">
+    <label class="vol-mute"><input type="checkbox" id="vol-mute"> Mute</label>
+  </div>
+</div>
+
+<script src="sound.js"></script>
+<script src="apps.js"></script>
+<script src="win98.js"></script>
+</body>
+</html>
