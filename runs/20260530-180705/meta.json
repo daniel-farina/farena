@@ -50,7 +50,7 @@
       "lps": 0,
       "main_html": "index.html",
       "shot": "grok.png",
-      "clip": "grok.mp4"
+      "clip": null
     },
     {
       "model": "cursor",
