@@ -22,7 +22,7 @@
       "lps": 6.524234543491029,
       "main_html": "win98/index.html",
       "shot": "claude.png",
-      "clip": "claude.mp4"
+      "clip": null
     },
     {
       "model": "codex",
@@ -36,7 +36,7 @@
       "lps": 4.116983321257641,
       "main_html": "index.html",
       "shot": "codex.png",
-      "clip": "codex.mp4"
+      "clip": null
     },
     {
       "model": "grok",
@@ -64,7 +64,7 @@
       "lps": 4.094592455625026,
       "main_html": "win98/index.html",
       "shot": "cursor.png",
-      "clip": "cursor.mp4"
+      "clip": null
     }
   ],
   "best": 0.0
