@@ -290,10 +290,10 @@
       "color": "#E5E7EB",
       "model_name": "grok-build",
       "ok": true,
-      "wall": 0.0,
+      "wall": 205.6,
       "lines": 1473,
       "bytes": 92329,
-      "lps": 0,
+      "lps": 7.164396887159533,
       "files": 16,
       "file_list": [
         {
@@ -444,5 +444,5 @@
       "clip": null
     }
   ],
-  "best": 0.0
+  "best": 205.6
 }
